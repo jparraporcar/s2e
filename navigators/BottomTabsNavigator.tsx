@@ -1,13 +1,13 @@
 /* eslint-disable react/no-unstable-nested-components */ // //TODO: pending to check this warning
-import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {StatisticsScreen} from '../screens/StatisticsScreen';
-import {TimerScreen} from '../screens/TimerScreen';
-import {SettingsScreen} from '../screens/SettingsScreen';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import {StudiesScreen} from '../screens/StudiesScreen';
-import {IconButtonSwitch} from '../components/IconButtonSwitch';
-import {useTheme} from '@react-navigation/native';
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { StatisticsScreen } from "../screens/StatisticsScreen";
+import { TimerScreen } from "../screens/TimerScreen";
+import { SettingsScreen } from "../screens/SettingsScreen";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { StudiesScreen } from "../screens/StudiesScreen";
+import { IconButtonSwitch } from "../components/IconButtonSwitch";
+import { useTheme } from "@react-navigation/native";
 
 // import {ImageStyle, StyleSheet, TextStyle, ViewStyle} from 'react-native';
 const BottomTabs = createBottomTabNavigator();
@@ -20,7 +20,7 @@ const BottomTabs = createBottomTabNavigator();
 // };
 
 export const BottomTabsNavigator: React.FC = (): JSX.Element => {
-  const {colors} = useTheme();
+  const { colors } = useTheme();
 
   return (
     <BottomTabs.Navigator
@@ -35,15 +35,16 @@ export const BottomTabsNavigator: React.FC = (): JSX.Element => {
         tabBarLabelStyle: {
           fontSize: 14,
         },
-        tabBarActiveTintColor: 'black',
-      }}>
+        tabBarActiveTintColor: "black",
+      }}
+    >
       <BottomTabs.Screen
         name="StatisticsScreen"
         component={StatisticsScreen}
         options={{
-          title: 'Statistics',
-          tabBarLabel: 'Statistics',
-          tabBarIcon: ({color, size}) => (
+          title: "Statistics",
+          tabBarLabel: "Statistics",
+          tabBarIcon: ({ color, size }) => (
             <Ionicons name="stats-chart-outline" size={size} color={color} />
           ),
         }}
@@ -51,19 +52,19 @@ export const BottomTabsNavigator: React.FC = (): JSX.Element => {
       <BottomTabs.Screen
         name="StudyPlansScreen"
         component={StudiesScreen}
-        options={({navigation}) => ({
-          title: 'Studies',
-          tabBarLabel: 'Studies',
-          tabBarIcon: ({color, size}) => (
+        options={({ navigation }) => ({
+          title: "Studies",
+          tabBarLabel: "Studies",
+          tabBarIcon: ({ color, size }) => (
             <Ionicons name="documents-outline" size={size} color={color} />
           ),
           headerRight: () => (
             <IconButtonSwitch
               iconNameProp={{
-                outline: 'add-circle-outline',
-                filled: 'add-circle',
+                outline: "add-circle-outline",
+                filled: "add-circle",
               }}
-              actionOnPress={() => navigation.navigate('AddStudy')}
+              actionOnPress={() => navigation.navigate("AddStudies")}
               color="black"
               size={28}
             />
@@ -74,9 +75,9 @@ export const BottomTabsNavigator: React.FC = (): JSX.Element => {
         name="TimerScreen"
         component={TimerScreen}
         options={{
-          title: 'Timer',
-          tabBarLabel: 'Timer',
-          tabBarIcon: ({color, size}) => (
+          title: "Timer",
+          tabBarLabel: "Timer",
+          tabBarIcon: ({ color, size }) => (
             <Ionicons name="timer-outline" size={size} color={color} />
           ),
         }}
@@ -85,9 +86,9 @@ export const BottomTabsNavigator: React.FC = (): JSX.Element => {
         name="SettingsScreen"
         component={SettingsScreen}
         options={{
-          title: 'Settings',
-          tabBarLabel: 'Settings',
-          tabBarIcon: ({color, size}) => (
+          title: "Settings",
+          tabBarLabel: "Settings",
+          tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings-outline" size={size} color={color} />
           ),
         }}

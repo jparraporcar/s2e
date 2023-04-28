@@ -1,10 +1,10 @@
-import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
-import {NavigationContainer} from '@react-navigation/native';
-import {MyTheme} from './theme/theme';
-import {BottomTabsNavigator} from './navigators/BottomTabsNavigator';
-import {StudySetup} from './components/StudySetup';
-import {TransitionPresets} from '@react-navigation/stack';
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
+import { MyTheme } from "./theme/theme";
+import { BottomTabsNavigator } from "./navigators/BottomTabsNavigator";
+import { StudiesSetup } from "./components/StudiesSetup";
+import { TransitionPresets } from "@react-navigation/stack";
 
 const Stack = createStackNavigator();
 
@@ -16,20 +16,21 @@ const App: React.FC = (): JSX.Element => {
           headerStyle: {
             backgroundColor: MyTheme.colors.primary,
           },
-        }}>
+        }}
+      >
         <Stack.Screen
           name="BottomNavigation"
           component={BottomTabsNavigator}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="AddStudy"
+          name="AddStudies"
           options={{
-            title: 'Add Study',
+            title: "Add Studies",
             ...TransitionPresets.ModalSlideFromBottomIOS,
-            headerTintColor: 'black',
+            headerTintColor: "black",
           }}
-          component={StudySetup}
+          component={StudiesSetup}
         />
       </Stack.Navigator>
     </NavigationContainer>
