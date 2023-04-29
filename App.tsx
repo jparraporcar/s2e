@@ -3,8 +3,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { MyTheme } from "./theme/theme";
 import { BottomTabsNavigator } from "./navigators/BottomTabsNavigator";
-import { StudiesSetup } from "./components/StudiesSetup";
 import { TransitionPresets } from "@react-navigation/stack";
+import { AddGoalScreen } from "./screens/AddGoalScreen";
 
 const Stack = createStackNavigator();
 
@@ -24,13 +24,13 @@ const App: React.FC = (): JSX.Element => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="AddStudies"
+          name="AddGoalScreen"
           options={{
-            title: "Add Studies",
+            title: "Add Goal",
             ...TransitionPresets.ModalSlideFromBottomIOS,
             headerTintColor: "black",
           }}
-          component={StudiesSetup}
+          component={AddGoalScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

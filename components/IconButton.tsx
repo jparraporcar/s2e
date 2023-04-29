@@ -1,4 +1,11 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 interface IPropsIconButton {
@@ -7,6 +14,7 @@ interface IPropsIconButton {
   color: string;
   onPress: () => void;
   actionTitle: string;
+  customStyles?: { ["containerButton"]: ViewStyle; ["text"]: TextStyle };
 }
 export const IconButton: React.FC<IPropsIconButton> = ({
   icon,
@@ -14,18 +22,32 @@ export const IconButton: React.FC<IPropsIconButton> = ({
   color,
   onPress,
   actionTitle,
+  customStyles,
 }): JSX.Element => {
   return (
     <Pressable
       onPress={onPress}
       style={({ pressed }) => pressed && styles.pressed}
     >
-      <View style={styles.containerButton}>
+      <View
+        style={[
+          customStyles && customStyles.containerButton
+            ? customStyles.containerButton
+            : undefined,
+          styles.containerButton,
+        ]}
+      >
         <View style={styles.containerIcon}>
           <Ionicons name={icon} size={size} color={color} />
         </View>
         <View>
-          <Text>{actionTitle}</Text>
+          <Text
+            style={
+              customStyles && customStyles.text ? customStyles.text : undefined
+            }
+          >
+            {actionTitle}
+          </Text>
         </View>
       </View>
     </Pressable>
@@ -36,8 +58,8 @@ export default IconButton;
 
 const styles = StyleSheet.create({
   containerIcon: {
-    padding: 6,
-    marginRight: 2,
+    margin: 0,
+    paddingRight: 5,
   },
   pressed: {
     opacity: 0.6,
@@ -46,6 +68,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 6,
   },
 });

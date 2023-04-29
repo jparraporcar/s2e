@@ -10,6 +10,7 @@ export interface IPropsAnimatedCard {
     marginHorizontal: number;
     marginBottom: number;
     borderColor: string;
+    width: string;
   };
   labelledTextInput: {
     labelText: string;
@@ -58,7 +59,11 @@ export const AnimatedCard: React.FC<IPropsAnimatedCard> = (
             key={index}
             placeholder={item.placeholder}
             labelText={item.labelText}
+            maxLength={30}
             keyboardType={item.keyboardType}
+            customStyles={{
+              containerMain: { marginVertical: 1, paddingVertical: 3 },
+            }}
           />
         ))}
       </Card>

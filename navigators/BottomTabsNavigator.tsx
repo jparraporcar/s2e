@@ -5,7 +5,7 @@ import { StatisticsScreen } from "../screens/StatisticsScreen";
 import { TimerScreen } from "../screens/TimerScreen";
 import { SettingsScreen } from "../screens/SettingsScreen";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { StudiesScreen } from "../screens/StudiesScreen";
+import { GoalsScreen } from "../screens/GoalsScreen";
 import { IconButtonSwitch } from "../components/IconButtonSwitch";
 import { useTheme } from "@react-navigation/native";
 
@@ -50,11 +50,11 @@ export const BottomTabsNavigator: React.FC = (): JSX.Element => {
         }}
       />
       <BottomTabs.Screen
-        name="StudyPlansScreen"
-        component={StudiesScreen}
+        name="GoalsScreen"
+        component={GoalsScreen}
         options={({ navigation }) => ({
-          title: "Studies",
-          tabBarLabel: "Studies",
+          title: "Goals",
+          tabBarLabel: "Goals",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="documents-outline" size={size} color={color} />
           ),
@@ -64,7 +64,7 @@ export const BottomTabsNavigator: React.FC = (): JSX.Element => {
                 outline: "add-circle-outline",
                 filled: "add-circle",
               }}
-              actionOnPress={() => navigation.navigate("AddStudies")}
+              actionOnPress={() => navigation.navigate("AddGoalScreen")}
               color="black"
               size={28}
             />
