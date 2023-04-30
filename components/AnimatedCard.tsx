@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "@rneui/themed";
-import { KeyboardTypeOptions, StyleSheet } from "react-native";
+import {
+  KeyboardTypeOptions,
+  StyleSheet,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
 import { LabelledTextInput } from "./LabelledTextInput";
 import { Animated } from "react-native";
+import IconButton from "./IconButton";
 
 export interface IPropsAnimatedCard {
   containerStyleCard: {
@@ -18,6 +25,13 @@ export interface IPropsAnimatedCard {
     keyboardType: KeyboardTypeOptions;
   }[];
   cardTitle: string;
+  customStyleButtons: { ["containerButton"]: ViewStyle; ["text"]: TextStyle };
+  iconButtonLeft: string;
+  iconButtonRight: string;
+  iconsColor: string;
+  sizeIcons: number;
+  onPressButtonLeft: () => void;
+  onPressButtonRight: () => void;
 }
 
 export const AnimatedCard: React.FC<IPropsAnimatedCard> = (
@@ -66,7 +80,33 @@ export const AnimatedCard: React.FC<IPropsAnimatedCard> = (
             }}
           />
         ))}
+        <View style={styles.containerButtons}>
+          <View>
+            <IconButton
+              icon="checkmark-outline"
+              size={props.sizeIcons}
+              color={props.iconsColor}
+              actionTitle="Accept"
+              onPress={props.onPressButtonLeft}
+              customStyles={props.customStyleButtons}
+            />
+          </View>
+          <View>
+            <IconButton
+              icon="close-outline"
+              size={24}
+              color={props.iconsColor}
+              actionTitle="Cancel"
+              customStyles={props.customStyleButtons}
+              onPress={props.onPressButtonRight}
+            />
+          </View>
+        </View>
       </Card>
     </Animated.View>
   );
 };
+
+const styles = StyleSheet.create({
+  containerButtons: { flexDirection: "row", marginVertical: 10 },
+});

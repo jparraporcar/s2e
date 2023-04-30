@@ -15,7 +15,13 @@ interface IPropsLabelledTextInput {
   placeholder: string;
   keyboardType: KeyboardTypeOptions;
   maxLength: number;
-  customStyles?: { [key: string]: ViewStyle | TextStyle };
+  customStyles?: {
+    ["containerMain"]?: ViewStyle;
+    ["containerTextLabel"]?: ViewStyle;
+    ["textLabel"]?: TextStyle;
+    ["containerTextInput"]?: ViewStyle;
+    ["textInput"]?: TextStyle;
+  };
 }
 
 export const LabelledTextInput: React.FC<IPropsLabelledTextInput> = ({
@@ -69,7 +75,7 @@ export const LabelledTextInput: React.FC<IPropsLabelledTextInput> = ({
           onChangeText={changeTextHandler}
           value={enteredText}
           keyboardType={keyboardType}
-          maxLength={30}
+          maxLength={maxLength}
           style={customStyles ? customStyles.textInput : undefined}
         />
       </View>

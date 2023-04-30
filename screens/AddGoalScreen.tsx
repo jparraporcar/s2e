@@ -7,7 +7,7 @@ import { IPropsAnimatedCard } from "../components/AnimatedCard";
 import { AnimatedCard } from "../components/AnimatedCard";
 import { CustomModal } from "../components/CustomModal";
 
-const labelledTextInput = [
+const labelledTextInputBook = [
   {
     labelText: "Name:",
     placeholder: "input book name",
@@ -30,21 +30,36 @@ const labelledTextInput = [
   },
 ];
 
+const labelledTextInputCourse = [
+  {
+    labelText: "Name:",
+    placeholder: "input course name",
+    keyboardType: "ascii-capable" as KeyboardTypeOptions,
+  },
+  {
+    labelText: "Instructor:",
+    placeholder: "input name of the instructor",
+    keyboardType: "ascii-capable" as KeyboardTypeOptions,
+  },
+  {
+    labelText: "Sections",
+    placeholder: "input number of sections",
+    keyboardType: "ascii-capable" as KeyboardTypeOptions,
+  },
+  {
+    labelText: "Subsections",
+    placeholder: "input number of subsections",
+    keyboardType: "ascii-capable" as KeyboardTypeOptions,
+  },
+];
+
 export const AddGoalScreen: React.FC = (): JSX.Element => {
   const { colors } = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
-
-  const animatedCardProps: IPropsAnimatedCard = {
-    containerStyleCard: {
-      borderRadius: 10,
-      marginHorizontal: 0,
-      marginBottom: 5,
-      borderColor: colors.primary,
-      width: "100%",
-    },
-    labelledTextInput: labelledTextInput,
-    cardTitle: "Books",
-  };
+  const [animatedCardContent, setAnimatedCardContent] = useState({
+    labelledTextInput: [] as any,
+    cardTitle: "",
+  });
 
   return (
     <>
@@ -53,9 +68,32 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
         modalVisible={modalVisible}
       >
         <AnimatedCard
-          containerStyleCard={animatedCardProps.containerStyleCard}
-          labelledTextInput={animatedCardProps.labelledTextInput}
-          cardTitle={animatedCardProps.cardTitle}
+          containerStyleCard={{
+            borderRadius: 10,
+            marginHorizontal: 0,
+            marginBottom: 5,
+            borderColor: colors.primary,
+            width: "100%",
+          }}
+          labelledTextInput={animatedCardContent.labelledTextInput}
+          cardTitle={animatedCardContent.cardTitle}
+          customStyleButtons={{
+            containerButton: {
+              borderWidth: 1,
+              borderRadius: 7,
+              borderColor: colors.primary,
+              width: 100,
+              marginHorizontal: 20,
+              paddingVertical: 5,
+            },
+            text: { color: "black" },
+          }}
+          iconButtonLeft="chechmark-outline"
+          iconButtonRight="close-outline"
+          iconsColor={colors.primary}
+          sizeIcons={24}
+          onPressButtonLeft={() => setModalVisible(false)}
+          onPressButtonRight={() => setModalVisible(false)}
         />
       </CustomModal>
       <View style={styles.containerMain}>
@@ -65,7 +103,14 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
             labelText="Name:"
             maxLength={30}
             keyboardType="ascii-capable"
-            customStyles={customStylesLabelledTextIntput}
+            customStyles={{
+              containerMain: {
+                borderBottomWidth: 0,
+              },
+              textLabel: {
+                color: "black",
+              },
+            }}
           />
         </View>
         <View style={styles.containerButtons}>
@@ -74,7 +119,13 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
               icon="book"
               size={24}
               color={colors.primary}
-              onPress={() => setModalVisible(true)}
+              onPress={() => {
+                setAnimatedCardContent({
+                  labelledTextInput: labelledTextInputBook,
+                  cardTitle: "Book",
+                });
+                setModalVisible(true);
+              }}
               actionTitle="Add Book"
               customStyles={{
                 containerButton: {
@@ -94,7 +145,13 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
               icon="laptop"
               size={24}
               color={colors.primary}
-              onPress={() => console.log("laptop pressed")}
+              onPress={() => {
+                setAnimatedCardContent({
+                  labelledTextInput: labelledTextInputCourse,
+                  cardTitle: "Course",
+                });
+                setModalVisible(true);
+              }}
               actionTitle="Add Course"
               customStyles={{
                 containerButton: {
@@ -115,15 +172,6 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
   );
 };
 
-const customStylesLabelledTextIntput = StyleSheet.create({
-  containerMain: {
-    borderBottomWidth: 0,
-  },
-  containerTextLabel: {
-    color: "black",
-  },
-});
-
 const styles = StyleSheet.create({
   containerMain: {
     flex: 1,
@@ -132,7 +180,6 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   containerButtons: {
-    flex: 1,
     flexDirection: "row",
     justifyContent: "center",
   },
