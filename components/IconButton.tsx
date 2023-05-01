@@ -13,8 +13,12 @@ interface IPropsIconButton {
   size: number;
   color: string;
   onPress: () => void;
-  actionTitle: string;
-  customStyles?: { ["containerButton"]: ViewStyle; ["text"]: TextStyle };
+  actionTitle?: string;
+  customStyles?: {
+    ["containerButton"]?: ViewStyle;
+    ["containerIcon"]?: ViewStyle;
+    ["text"]?: TextStyle;
+  };
 }
 export const IconButton: React.FC<IPropsIconButton> = ({
   icon,
@@ -31,13 +35,20 @@ export const IconButton: React.FC<IPropsIconButton> = ({
     >
       <View
         style={[
+          styles.containerButton,
           customStyles && customStyles.containerButton
             ? customStyles.containerButton
             : undefined,
-          styles.containerButton,
         ]}
       >
-        <View style={styles.containerIcon}>
+        <View
+          style={[
+            styles.containerIcon,
+            customStyles && customStyles.containerIcon
+              ? customStyles.containerIcon
+              : undefined,
+          ]}
+        >
           <Ionicons name={icon} size={size} color={color} />
         </View>
         <View>
@@ -46,7 +57,7 @@ export const IconButton: React.FC<IPropsIconButton> = ({
               customStyles && customStyles.text ? customStyles.text : undefined
             }
           >
-            {actionTitle}
+            {actionTitle ? actionTitle : ""}
           </Text>
         </View>
       </View>

@@ -6,6 +6,8 @@ import { useTheme } from "@react-navigation/native";
 import { IPropsAnimatedCard } from "../components/AnimatedCard";
 import { AnimatedCard } from "../components/AnimatedCard";
 import { CustomModal } from "../components/CustomModal";
+import { CustomForm } from "../components/CustomForm";
+import { Resource } from "../components/Resource";
 
 const labelledTextInputBook = [
   {
@@ -56,10 +58,8 @@ const labelledTextInputCourse = [
 export const AddGoalScreen: React.FC = (): JSX.Element => {
   const { colors } = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
-  const [animatedCardContent, setAnimatedCardContent] = useState({
-    labelledTextInput: [] as any,
-    cardTitle: "",
-  });
+  const [animatedCardTitle, setAnimatedCardTitle] = useState("");
+  const [customFormContent, setCustomFormContent] = useState([] as any);
 
   return (
     <>
@@ -75,8 +75,7 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
             borderColor: colors.primary,
             width: "100%",
           }}
-          labelledTextInput={animatedCardContent.labelledTextInput}
-          cardTitle={animatedCardContent.cardTitle}
+          cardTitle={animatedCardTitle}
           customStyleButtons={{
             containerButton: {
               borderWidth: 1,
@@ -94,15 +93,27 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
           sizeIcons={24}
           onPressButtonLeft={() => setModalVisible(false)}
           onPressButtonRight={() => setModalVisible(false)}
-        />
+        >
+          <CustomForm
+            maxLength={30}
+            labelledTextInput={customFormContent}
+            customStyles={{
+              containerMain: { marginVertical: 1, paddingVertical: 3 },
+            }}
+          />
+        </AnimatedCard>
       </CustomModal>
       <View style={styles.containerMain}>
         <View style={styles.containerLabelledTextInput}>
-          <LabelledTextInput
-            placeholder="Write name"
-            labelText="Name:"
+          <CustomForm
+            labelledTextInput={[
+              {
+                placeholder: "Write name",
+                labelText: "Name:",
+                keyboardType: "ascii-capable",
+              },
+            ]}
             maxLength={30}
-            keyboardType="ascii-capable"
             customStyles={{
               containerMain: {
                 borderBottomWidth: 0,
@@ -120,10 +131,8 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
               size={24}
               color={colors.primary}
               onPress={() => {
-                setAnimatedCardContent({
-                  labelledTextInput: labelledTextInputBook,
-                  cardTitle: "Book",
-                });
+                setCustomFormContent(labelledTextInputBook);
+                setAnimatedCardTitle("Book");
                 setModalVisible(true);
               }}
               actionTitle="Add Book"
@@ -146,10 +155,8 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
               size={24}
               color={colors.primary}
               onPress={() => {
-                setAnimatedCardContent({
-                  labelledTextInput: labelledTextInputCourse,
-                  cardTitle: "Course",
-                });
+                setCustomFormContent(labelledTextInputCourse);
+                setAnimatedCardTitle("course");
                 setModalVisible(true);
               }}
               actionTitle="Add Course"
@@ -166,6 +173,9 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
               }}
             />
           </View>
+        </View>
+        <View>
+          <Resource />
         </View>
       </View>
     </>

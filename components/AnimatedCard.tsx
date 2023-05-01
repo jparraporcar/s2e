@@ -1,4 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  PropsWithChildren,
+  ReactNode,
+  useEffect,
+  useState,
+} from "react";
 import { Card } from "@rneui/themed";
 import {
   KeyboardTypeOptions,
@@ -11,7 +16,7 @@ import { LabelledTextInput } from "./LabelledTextInput";
 import { Animated } from "react-native";
 import IconButton from "./IconButton";
 
-export interface IPropsAnimatedCard {
+export interface IPropsAnimatedCard extends PropsWithChildren {
   containerStyleCard: {
     borderRadius: number;
     marginHorizontal: number;
@@ -19,11 +24,6 @@ export interface IPropsAnimatedCard {
     borderColor: string;
     width: string;
   };
-  labelledTextInput: {
-    labelText: string;
-    placeholder: string;
-    keyboardType: KeyboardTypeOptions;
-  }[];
   cardTitle: string;
   customStyleButtons: { ["containerButton"]: ViewStyle; ["text"]: TextStyle };
   iconButtonLeft: string;
@@ -32,6 +32,7 @@ export interface IPropsAnimatedCard {
   sizeIcons: number;
   onPressButtonLeft: () => void;
   onPressButtonRight: () => void;
+  children: ReactNode;
 }
 
 export const AnimatedCard: React.FC<IPropsAnimatedCard> = (
@@ -62,24 +63,13 @@ export const AnimatedCard: React.FC<IPropsAnimatedCard> = (
     <Animated.View style={animatedViewStyle}>
       <Card
         containerStyle={[
-          props.containerStyleCard,
           { borderColor: props.containerStyleCard.borderColor },
+          props.containerStyleCard,
         ]}
       >
         <Card.Title>{props.cardTitle}</Card.Title>
         <Card.Divider />
-        {props.labelledTextInput.map((item, index) => (
-          <LabelledTextInput
-            key={index}
-            placeholder={item.placeholder}
-            labelText={item.labelText}
-            maxLength={30}
-            keyboardType={item.keyboardType}
-            customStyles={{
-              containerMain: { marginVertical: 1, paddingVertical: 3 },
-            }}
-          />
-        ))}
+        {props.children}
         <View style={styles.containerButtons}>
           <View>
             <IconButton

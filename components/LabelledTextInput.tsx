@@ -22,61 +22,57 @@ interface IPropsLabelledTextInput {
     ["containerTextInput"]?: ViewStyle;
     ["textInput"]?: TextStyle;
   };
+  onChangeText: (text: string) => void;
+  value: string;
 }
 
-export const LabelledTextInput: React.FC<IPropsLabelledTextInput> = ({
-  labelText,
-  placeholder,
-  keyboardType,
-  maxLength,
-  customStyles,
-}): JSX.Element => {
-  const [enteredText, setEnteredText] = useState<string>("");
+export const LabelledTextInput: React.FC<IPropsLabelledTextInput> = (
+  props
+): JSX.Element => {
   const { colors } = useTheme();
-  const changeTextHandler = (text: string) => setEnteredText(text);
 
   return (
     <View
       style={[
-        customStyles && customStyles.containerMain
-          ? customStyles.containerMain
-          : undefined,
         styles.containerMain,
         { borderBottomColor: colors.primary },
+        props.customStyles && props.customStyles.containerMain
+          ? props.customStyles.containerMain
+          : undefined,
       ]}
     >
       <View
         style={[
-          customStyles && customStyles.containerTextLabel
-            ? customStyles.containerTextLabel
-            : undefined,
           styles.containerTextLabel,
+          props.customStyles && props.customStyles.containerTextLabel
+            ? props.customStyles.containerTextLabel
+            : undefined,
         ]}
       >
         <Text
           style={
-            customStyles && customStyles.textLabel
-              ? customStyles.textLabel
+            props.customStyles && props.customStyles.textLabel
+              ? props.customStyles.textLabel
               : undefined
           }
         >
-          {labelText}
+          {props.labelText}
         </Text>
       </View>
       <View
         style={
-          customStyles && customStyles.containerTextInput
-            ? customStyles.containerTextInput
+          props.customStyles && props.customStyles.containerTextInput
+            ? props.customStyles.containerTextInput
             : undefined
         }
       >
         <TextInput
-          placeholder={placeholder}
-          onChangeText={changeTextHandler}
-          value={enteredText}
-          keyboardType={keyboardType}
-          maxLength={maxLength}
-          style={customStyles ? customStyles.textInput : undefined}
+          placeholder={props.placeholder}
+          onChangeText={props.onChangeText}
+          value={props.value}
+          keyboardType={props.keyboardType}
+          maxLength={props.maxLength}
+          style={props.customStyles ? props.customStyles.textInput : undefined}
         />
       </View>
     </View>
