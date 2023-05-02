@@ -3,11 +3,17 @@ import { KeyboardTypeOptions, StyleSheet, View } from "react-native";
 import { LabelledTextInput } from "../components/LabelledTextInput";
 import IconButton from "../components/IconButton";
 import { useTheme } from "@react-navigation/native";
-import { IPropsAnimatedCard } from "../components/AnimatedCard";
 import { AnimatedCard } from "../components/AnimatedCard";
 import { CustomModal } from "../components/CustomModal";
-import { CustomForm } from "../components/CustomForm";
 import { Resource } from "../components/Resource";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import {
+  TBook,
+  TCourse,
+  setBook,
+  setCourse,
+  setName,
+} from "../store/slices/goalSlice";
 
 const labelledTextInputBook = [
   {
@@ -58,8 +64,29 @@ const labelledTextInputCourse = [
 export const AddGoalScreen: React.FC = (): JSX.Element => {
   const { colors } = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
-  const [animatedCardTitle, setAnimatedCardTitle] = useState("");
+  const [animatedCardTitle, setAnimatedCardTitle] = useState<
+    "Book" | "Course" | ""
+  >("");
   const [customFormContent, setCustomFormContent] = useState([] as any);
+  const goalState = useAppSelector((state) => state.goal);
+  const dispatch = useAppDispatch();
+
+  const handleAddBook = (animatedCardTitle: string) => {
+    if (animatedCardTitle === "Book") {
+      return (resource: TBook) => dispatch(setBook(resource));
+    }
+    if (animatedCardTitle === "Course") {
+      return (resource: TCourse) => dispatch(setCourse(resource as TCourse));
+    }
+  };
+
+  const handleOnPressDeleteBook = () => {
+    dispatch(setBook(undefined));
+  };
+
+  const handleOnPressDeleteCourse = () => {
+    dispatch(setCourse(undefined));
+  };
 
   return (
     <>
@@ -68,7 +95,7 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
         modalVisible={modalVisible}
       >
         <AnimatedCard
-          containerStyleCard={{
+          cardContainer={{
             borderRadius: 10,
             marginHorizontal: 0,
             marginBottom: 5,
@@ -91,42 +118,38 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
           iconButtonRight="close-outline"
           iconsColor={colors.primary}
           sizeIcons={24}
-          onPressButtonLeft={() => setModalVisible(false)}
-          onPressButtonRight={() => setModalVisible(false)}
-        >
-          <CustomForm
-            maxLength={30}
-            labelledTextInput={customFormContent}
-            customStyles={{
-              containerMain: { marginVertical: 1, paddingVertical: 3 },
-            }}
-          />
-        </AnimatedCard>
+          onPressAccept={(resource: any) => {
+            handleAddBook(animatedCardTitle)!(resource);
+            setModalVisible(false);
+          }}
+          onPressCancel={() => setModalVisible(false)}
+          labelledTextInput={customFormContent}
+          labelledTextInputMaxLength={30}
+        ></AnimatedCard>
       </CustomModal>
       <View style={styles.containerMain}>
         <View style={styles.containerLabelledTextInput}>
-          <CustomForm
-            labelledTextInput={[
-              {
-                placeholder: "Write name",
-                labelText: "Name:",
-                keyboardType: "ascii-capable",
-              },
-            ]}
-            maxLength={30}
+          <LabelledTextInput
+            labelText="Name:"
+            placeholder="input name"
+            keyboardType="ascii-capable"
+            maxLength={25}
+            onChangeText={(enteredText) => dispatch(setName(enteredText))}
+            value={goalState.name ? goalState.name : ""}
             customStyles={{
-              containerMain: {
-                borderBottomWidth: 0,
-              },
               textLabel: {
-                color: "black",
+                fontSize: 16,
+              },
+              textInput: {
+                fontSize: 16,
               },
             }}
           />
         </View>
         <View style={styles.containerButtons}>
-          <View>
+          <View style={styles.iconButtonContainer}>
             <IconButton
+              disabled={goalState.books.length > 0 ? true : false}
               icon="book"
               size={24}
               color={colors.primary}
@@ -142,21 +165,21 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
                   borderRadius: 7,
                   borderColor: colors.primary,
                   width: 120,
-                  marginHorizontal: 20,
                   paddingVertical: 5,
                 },
                 text: { color: "black" },
               }}
             />
           </View>
-          <View>
+          <View style={styles.iconButtonContainer}>
             <IconButton
+              disabled={goalState.courses.length > 0 ? true : false}
               icon="laptop"
               size={24}
               color={colors.primary}
               onPress={() => {
                 setCustomFormContent(labelledTextInputCourse);
-                setAnimatedCardTitle("course");
+                setAnimatedCardTitle("Course");
                 setModalVisible(true);
               }}
               actionTitle="Add Course"
@@ -166,7 +189,6 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
                   borderRadius: 7,
                   borderColor: colors.primary,
                   width: 120,
-                  marginHorizontal: 20,
                   paddingVertical: 5,
                 },
                 text: { color: "black" },
@@ -174,8 +196,39 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
             />
           </View>
         </View>
-        <View>
-          <Resource />
+        <View style={styles.containerResources}>
+          <View>
+            {goalState.books.length > 0 &&
+              goalState.books.map((book: TBook, index: number) => (
+                <Resource
+                  onPressDelete={handleOnPressDeleteBook}
+                  key={index}
+                  inputResource={book}
+                  customStyles={{
+                    containerSwipeable: {
+                      marginTop: 0,
+                    },
+                    containerLeftAction: { marginTop: 0 },
+                  }}
+                />
+              ))}
+          </View>
+          <View>
+            {goalState.courses.length > 0 &&
+              goalState.courses.map((course: TCourse, index: number) => (
+                <Resource
+                  onPressDelete={handleOnPressDeleteCourse}
+                  key={index}
+                  inputResource={course}
+                  customStyles={{
+                    containerSwipeable: {
+                      marginTop: 0,
+                    },
+                    containerLeftAction: { marginTop: 0 },
+                  }}
+                />
+              ))}
+          </View>
         </View>
       </View>
     </>
@@ -191,9 +244,15 @@ const styles = StyleSheet.create({
   },
   containerButtons: {
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-between",
   },
   containerLabelledTextInput: {
     marginBottom: 15,
+  },
+  containerResources: {
+    marginTop: 20,
+  },
+  iconButtonContainer: {
+    marginHorizontal: 30,
   },
 });

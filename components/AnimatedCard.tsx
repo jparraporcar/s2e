@@ -17,7 +17,7 @@ import { Animated } from "react-native";
 import IconButton from "./IconButton";
 
 export interface IPropsAnimatedCard extends PropsWithChildren {
-  containerStyleCard: {
+  cardContainer: {
     borderRadius: number;
     marginHorizontal: number;
     marginBottom: number;
@@ -30,15 +30,33 @@ export interface IPropsAnimatedCard extends PropsWithChildren {
   iconButtonRight: string;
   iconsColor: string;
   sizeIcons: number;
-  onPressButtonLeft: () => void;
-  onPressButtonRight: () => void;
-  children: ReactNode;
+  onPressAccept: (resource: any) => void;
+  onPressCancel: () => void;
+  labelledTextInput: {
+    labelText: string;
+    placeholder: string;
+    keyboardType: KeyboardTypeOptions;
+  }[];
+  labelledTextInputMaxLength: number;
+  labelledTextInputCustomStyles?: {
+    ["containerMain"]?: ViewStyle;
+    ["containerTextLabel"]?: ViewStyle;
+    ["textLabel"]?: TextStyle;
+    ["containerTextInput"]?: ViewStyle;
+    ["textInput"]?: TextStyle;
+  };
 }
 
 export const AnimatedCard: React.FC<IPropsAnimatedCard> = (
   props
 ): JSX.Element => {
   const [animation] = useState(new Animated.Value(0));
+  const [textInputs, setTextInputs] = useState<{ [key: string]: string }>({});
+  const handleTextInputChange = (label: string, text: string) => {
+    const newTextInputValues = { ...textInputs };
+    newTextInputValues[label] = text;
+    setTextInputs(newTextInputValues);
+  };
 
   useEffect(() => {
     Animated.timing(animation, {
@@ -63,32 +81,49 @@ export const AnimatedCard: React.FC<IPropsAnimatedCard> = (
     <Animated.View style={animatedViewStyle}>
       <Card
         containerStyle={[
-          { borderColor: props.containerStyleCard.borderColor },
-          props.containerStyleCard,
+          { borderColor: props.cardContainer.borderColor },
+          props.cardContainer,
         ]}
       >
         <Card.Title>{props.cardTitle}</Card.Title>
         <Card.Divider />
-        {props.children}
+        <View>
+          {props.labelledTextInput.map((item, index) => (
+            <LabelledTextInput
+              key={index}
+              placeholder={item.placeholder}
+              labelText={item.labelText}
+              maxLength={30}
+              keyboardType={item.keyboardType}
+              value={textInputs[index]}
+              onChangeText={(text) =>
+                handleTextInputChange(item.labelText, text)
+              }
+              customStyles={props.labelledTextInputCustomStyles}
+            />
+          ))}
+        </View>
         <View style={styles.containerButtons}>
           <View>
             <IconButton
+              disabled={false}
               icon="checkmark-outline"
               size={props.sizeIcons}
               color={props.iconsColor}
               actionTitle="Accept"
-              onPress={props.onPressButtonLeft}
+              onPress={() => props.onPressAccept(textInputs)}
               customStyles={props.customStyleButtons}
             />
           </View>
           <View>
             <IconButton
+              disabled={false}
               icon="close-outline"
               size={24}
               color={props.iconsColor}
               actionTitle="Cancel"
               customStyles={props.customStyleButtons}
-              onPress={props.onPressButtonRight}
+              onPress={props.onPressCancel}
             />
           </View>
         </View>

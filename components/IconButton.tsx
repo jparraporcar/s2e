@@ -7,12 +7,14 @@ import {
   ViewStyle,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { colorsPalette } from "../const/colors";
 
 interface IPropsIconButton {
+  disabled: boolean;
   icon: string;
   size: number;
   color: string;
-  onPress: () => void;
+  onPress: (resource: any) => void;
   actionTitle?: string;
   customStyles?: {
     ["containerButton"]?: ViewStyle;
@@ -21,6 +23,7 @@ interface IPropsIconButton {
   };
 }
 export const IconButton: React.FC<IPropsIconButton> = ({
+  disabled,
   icon,
   size,
   color,
@@ -30,6 +33,7 @@ export const IconButton: React.FC<IPropsIconButton> = ({
 }): JSX.Element => {
   return (
     <Pressable
+      disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => pressed && styles.pressed}
     >
@@ -39,6 +43,7 @@ export const IconButton: React.FC<IPropsIconButton> = ({
           customStyles && customStyles.containerButton
             ? customStyles.containerButton
             : undefined,
+          disabled ? styles.containerButtonBordersDisabled : undefined,
         ]}
       >
         <View
@@ -49,13 +54,18 @@ export const IconButton: React.FC<IPropsIconButton> = ({
               : undefined,
           ]}
         >
-          <Ionicons name={icon} size={size} color={color} />
+          <Ionicons
+            name={icon}
+            size={size}
+            color={disabled ? styles.iconDisabled.color : color}
+          />
         </View>
         <View>
           <Text
-            style={
-              customStyles && customStyles.text ? customStyles.text : undefined
-            }
+            style={[
+              customStyles && customStyles.text ? customStyles.text : undefined,
+              disabled ? styles.textDisabled : undefined,
+            ]}
           >
             {actionTitle ? actionTitle : ""}
           </Text>
@@ -79,5 +89,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+  },
+  iconDisabled: {
+    color: colorsPalette.secondary_grey_100,
+  },
+  containerButtonBordersDisabled: {
+    borderColor: colorsPalette.secondary_grey_100,
+  },
+  textDisabled: {
+    color: colorsPalette.secondary_grey_100,
   },
 });
