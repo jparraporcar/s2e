@@ -1,15 +1,17 @@
-import React, { PropsWithChildren, useState } from "react";
+import React, { PropsWithChildren, ReactNode, useState } from "react";
 import { Modal, Alert, View, Button, StyleSheet } from "react-native";
 
 interface IPropsCustomModal extends PropsWithChildren {
   modalVisible: boolean;
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  toast: ReactNode;
 }
 
 export const CustomModal: React.FC<IPropsCustomModal> = ({
   modalVisible,
   setModalVisible,
   children,
+  toast,
 }): JSX.Element => {
   return (
     <Modal
@@ -22,6 +24,7 @@ export const CustomModal: React.FC<IPropsCustomModal> = ({
       }}
     >
       <View style={styles.containerMain}>{children}</View>
+      {toast}
     </Modal>
   );
 };

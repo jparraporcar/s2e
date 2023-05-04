@@ -111,7 +111,11 @@ export const AnimatedCard: React.FC<IPropsAnimatedCard> = (
               size={props.sizeIcons}
               color={props.iconsColor}
               actionTitle="Accept"
-              onPress={() => props.onPressAccept(textInputs)}
+              onPress={() => {
+                console.log("here");
+                console.log(textInputs, "textInputs");
+                props.onPressAccept(textInputs);
+              }}
               customStyles={props.customStyleButtons}
             />
           </View>

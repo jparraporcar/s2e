@@ -1,22 +1,22 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type TBook = {
-  name: string;
-  author: string;
-  pages: number;
-  year: number;
+  Name: string;
+  Author: string;
+  Pages: number;
+  Year: number;
 };
 export type TCourse = {
-  name: string;
-  instructor: string;
-  sections: number;
-  subsections: number;
+  Name: string;
+  Instructor: string;
+  Sections: number;
+  Lectures: number;
 };
 
 export interface IGoalState {
   name: string | undefined;
-  books: TBook[];
-  courses: TCourse[];
+  book: TBook[];
+  course: TCourse[];
   dedication: {
     monday: {
       isSelected: boolean;
@@ -62,8 +62,8 @@ export interface IGoalState {
 
 const initialState: IGoalState = {
   name: undefined,
-  books: [],
-  courses: [],
+  book: [],
+  course: [],
   dedication: {
     monday: {
       isSelected: false,
@@ -117,17 +117,17 @@ export const goalSlice = createSlice({
     },
     setBook: (state, action: PayloadAction<TBook | undefined>) => {
       if (!action.payload) {
-        state.books = [];
+        state.book = [];
         return;
       }
-      state.books.push(action.payload);
+      state.book.push(action.payload);
     },
     setCourse: (state, action: PayloadAction<TCourse | undefined>) => {
       if (!action.payload) {
-        state.courses = [];
+        state.course = [];
         return;
       }
-      state.courses.push(action.payload);
+      state.course.push(action.payload);
     },
     setDedication: (state, action: PayloadAction<IGoalState["dedication"]>) => {
       state.dedication = action.payload;

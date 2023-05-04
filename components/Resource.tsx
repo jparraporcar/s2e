@@ -66,7 +66,7 @@ export const Resource: React.FC<IPropsResource> = (props) => {
       >
         {props.inputResource
           ? Object.keys(props.inputResource).map((key, index) => (
-              <Text key={index}>{`${key} ${
+              <Text key={index}>{`${key}: ${
                 props.inputResource![key as keyof TResource]
               }`}</Text>
             ))

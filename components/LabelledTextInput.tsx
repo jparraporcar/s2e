@@ -56,7 +56,7 @@ export const LabelledTextInput: React.FC<IPropsLabelledTextInput> = (
               : undefined
           }
         >
-          {props.labelText}
+          {props.labelText}:
         </Text>
       </View>
       <View

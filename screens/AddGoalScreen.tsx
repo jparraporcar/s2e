@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { KeyboardTypeOptions, StyleSheet, View } from "react-native";
 import { LabelledTextInput } from "../components/LabelledTextInput";
 import IconButton from "../components/IconButton";
@@ -14,25 +14,28 @@ import {
   setCourse,
   setName,
 } from "../store/slices/goalSlice";
+import Toast from "react-native-toast-message";
+import { bookSchema, courseSchema } from "../utils/ZodSchemas";
+import { ZodError } from "zod";
 
 const labelledTextInputBook = [
   {
-    labelText: "Name:",
+    labelText: "Name",
     placeholder: "input book name",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
   },
   {
-    labelText: "Author:",
+    labelText: "Author",
     placeholder: "input name of the Author",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
   },
   {
-    labelText: "Pages:",
+    labelText: "Pages",
     placeholder: "input n. of pages",
     keyboardType: "numbers-and-punctuation" as KeyboardTypeOptions,
   },
   {
-    labelText: "Year:",
+    labelText: "Year",
     placeholder: "input year of edition",
     keyboardType: "numbers-and-punctuation" as KeyboardTypeOptions,
   },
@@ -40,12 +43,12 @@ const labelledTextInputBook = [
 
 const labelledTextInputCourse = [
   {
-    labelText: "Name:",
+    labelText: "Name",
     placeholder: "input course name",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
   },
   {
-    labelText: "Instructor:",
+    labelText: "Instructor",
     placeholder: "input name of the instructor",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
   },
@@ -55,7 +58,7 @@ const labelledTextInputCourse = [
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
   },
   {
-    labelText: "Subsections",
+    labelText: "Lectures",
     placeholder: "input number of subsections",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
   },
@@ -63,7 +66,8 @@ const labelledTextInputCourse = [
 
 export const AddGoalScreen: React.FC = (): JSX.Element => {
   const { colors } = useTheme();
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [showToastSuccess, setShowToastSuccess] = useState(false);
   const [animatedCardTitle, setAnimatedCardTitle] = useState<
     "Book" | "Course" | ""
   >("");
@@ -73,10 +77,69 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
 
   const handleAddBook = (animatedCardTitle: string) => {
     if (animatedCardTitle === "Book") {
-      return (resource: TBook) => dispatch(setBook(resource));
+      return (resource: TBook) => {
+        try {
+          const resBook = bookSchema.parse({
+            Name: resource.Name,
+            Author: resource.Author,
+            Pages:
+              Number(resource.Pages).toString() === "NaN"
+                ? 0
+                : Number(resource.Pages),
+            Year:
+              Number(resource.Year).toString() === "NaN"
+                ? 0
+                : Number(resource.Year),
+          });
+          dispatch(setBook(resource));
+          setModalVisible(false);
+          setShowToastSuccess(true);
+        } catch (err: any) {
+          err.errors.map((err: any) =>
+            Toast.show({
+              type: "error",
+              text1: "Validation error",
+              text2: err.message,
+              position: "bottom",
+              visibilityTime: 2000,
+              bottomOffset: 20,
+            })
+          );
+        }
+      };
     }
+
     if (animatedCardTitle === "Course") {
-      return (resource: TCourse) => dispatch(setCourse(resource as TCourse));
+      return (resource: TCourse) => {
+        try {
+          const resCourse = courseSchema.parse({
+            Name: resource.Name,
+            Instructor: resource.Instructor,
+            Sections:
+              Number(resource.Sections).toString() === "NaN"
+                ? 0
+                : Number(resource.Sections),
+            Lectures:
+              Number(resource.Lectures).toString() === "NaN"
+                ? 0
+                : Number(resource.Lectures),
+          });
+          dispatch(setCourse(resource as TCourse));
+          setModalVisible(false);
+          setShowToastSuccess(true);
+        } catch (err: any) {
+          err.errors.map((err: any) =>
+            Toast.show({
+              type: "error",
+              text1: "Validation error",
+              text2: err.message,
+              position: "bottom",
+              visibilityTime: 2000,
+              bottomOffset: 20,
+            })
+          );
+        }
+      };
     }
   };
 
@@ -88,9 +151,23 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
     dispatch(setCourse(undefined));
   };
 
+  useEffect(() => {
+    if (showToastSuccess && animatedCardTitle) {
+      Toast.show({
+        type: "success",
+        text1: `New ${animatedCardTitle} added`,
+        position: "bottom",
+        visibilityTime: 2000,
+        bottomOffset: 20,
+      });
+    }
+  }, [showToastSuccess]);
+
   return (
     <>
+      <Toast onHide={() => setShowToastSuccess(false)} />
       <CustomModal
+        toast={<Toast />}
         setModalVisible={setModalVisible}
         modalVisible={modalVisible}
       >
@@ -120,7 +197,6 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
           sizeIcons={24}
           onPressAccept={(resource: any) => {
             handleAddBook(animatedCardTitle)!(resource);
-            setModalVisible(false);
           }}
           onPressCancel={() => setModalVisible(false)}
           labelledTextInput={customFormContent}
@@ -130,7 +206,7 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
       <View style={styles.containerMain}>
         <View style={styles.containerLabelledTextInput}>
           <LabelledTextInput
-            labelText="Name:"
+            labelText="Name"
             placeholder="input name"
             keyboardType="ascii-capable"
             maxLength={25}
@@ -149,7 +225,7 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
         <View style={styles.containerButtons}>
           <View style={styles.iconButtonContainer}>
             <IconButton
-              disabled={goalState.books.length > 0 ? true : false}
+              disabled={goalState.book.length > 0 ? true : false}
               icon="book"
               size={24}
               color={colors.primary}
@@ -173,7 +249,7 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
           </View>
           <View style={styles.iconButtonContainer}>
             <IconButton
-              disabled={goalState.courses.length > 0 ? true : false}
+              disabled={goalState.course.length > 0 ? true : false}
               icon="laptop"
               size={24}
               color={colors.primary}
@@ -198,8 +274,8 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
         </View>
         <View style={styles.containerResources}>
           <View>
-            {goalState.books.length > 0 &&
-              goalState.books.map((book: TBook, index: number) => (
+            {goalState.book.length > 0 &&
+              goalState.book.map((book: TBook, index: number) => (
                 <Resource
                   onPressDelete={handleOnPressDeleteBook}
                   key={index}
@@ -214,8 +290,8 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
               ))}
           </View>
           <View>
-            {goalState.courses.length > 0 &&
-              goalState.courses.map((course: TCourse, index: number) => (
+            {goalState.course.length > 0 &&
+              goalState.course.map((course: TCourse, index: number) => (
                 <Resource
                   onPressDelete={handleOnPressDeleteCourse}
                   key={index}
