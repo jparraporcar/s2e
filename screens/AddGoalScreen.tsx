@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { KeyboardTypeOptions, StyleSheet, View } from "react-native";
+import {
+  Dimensions,
+  KeyboardTypeOptions,
+  StyleSheet,
+  View,
+} from "react-native";
 import { LabelledTextInput } from "../components/LabelledTextInput";
 import IconButton from "../components/IconButton";
 import { useTheme } from "@react-navigation/native";
@@ -16,7 +21,12 @@ import {
 } from "../store/slices/goalSlice";
 import Toast from "react-native-toast-message";
 import { bookSchema, courseSchema } from "../utils/ZodSchemas";
-import { ZodError } from "zod";
+import { Text } from "@rneui/base";
+import { Dedication } from "../components/Dedication";
+import { Divider } from "../components/Divider";
+import { colorsPalette } from "../const/colors";
+
+const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const labelledTextInputBook = [
   {
@@ -272,9 +282,16 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
             />
           </View>
         </View>
+        <Divider
+          customStyles={{
+            width: SCREEN_WIDTH - 20,
+            borderBottomWidth: 0.5,
+            borderBottomColor: colorsPalette.secondary_grey_90,
+          }}
+        />
         <View style={styles.containerResources}>
           <View>
-            {goalState.book.length > 0 &&
+            {goalState.book.length > 0 ? (
               goalState.book.map((book: TBook, index: number) => (
                 <Resource
                   onPressDelete={handleOnPressDeleteBook}
@@ -287,10 +304,21 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
                     containerLeftAction: { marginTop: 0 },
                   }}
                 />
-              ))}
+              ))
+            ) : (
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 75,
+                }}
+              >
+                <Text>One book must be added</Text>
+              </View>
+            )}
           </View>
           <View>
-            {goalState.course.length > 0 &&
+            {goalState.course.length > 0 ? (
               goalState.course.map((course: TCourse, index: number) => (
                 <Resource
                   onPressDelete={handleOnPressDeleteCourse}
@@ -303,8 +331,32 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
                     containerLeftAction: { marginTop: 0 },
                   }}
                 />
-              ))}
+              ))
+            ) : (
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 75,
+                }}
+              >
+                <Text>One course must be added</Text>
+              </View>
+            )}
           </View>
+        </View>
+        <Divider
+          customStyles={{
+            width: SCREEN_WIDTH - 20,
+            borderBottomWidth: 1,
+            borderBottomColor: colorsPalette.secondary_grey_90,
+          }}
+        />
+        <View style={styles.dedicationContainer}>
+          <View style={styles.selectPeriodContainer}>
+            <Text>Select period</Text>
+          </View>
+          <Dedication />
         </View>
       </View>
     </>
@@ -326,9 +378,24 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   containerResources: {
-    marginTop: 20,
+    marginVertical: 10,
+    justifyContent: "center",
   },
   iconButtonContainer: {
     marginHorizontal: 30,
+  },
+  dedicationContainer: {
+    flexDirection: "column",
+    marginTop: 10,
+    height: 100,
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+  },
+  selectPeriodContainer: {
+    flex: 1,
+    width: SCREEN_WIDTH,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
   },
 });

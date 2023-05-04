@@ -17,6 +17,10 @@ export interface IGoalState {
   name: string | undefined;
   book: TBook[];
   course: TCourse[];
+  period: {
+    initialDay: string;
+    finalDay: string;
+  };
   dedication: {
     monday: {
       isSelected: boolean;
@@ -64,6 +68,10 @@ const initialState: IGoalState = {
   name: undefined,
   book: [],
   course: [],
+  period: {
+    initialDay: new Date().toISOString().substring(0, 10),
+    finalDay: new Date().toISOString().substring(0, 10),
+  },
   dedication: {
     monday: {
       isSelected: false,
@@ -129,6 +137,12 @@ export const goalSlice = createSlice({
       }
       state.course.push(action.payload);
     },
+    setPeriodInitial: (state, action: PayloadAction<string>) => {
+      state.period.initialDay = action.payload;
+    },
+    setPeriodFinal: (state, action: PayloadAction<string>) => {
+      state.period.finalDay = action.payload;
+    },
     setDedication: (state, action: PayloadAction<IGoalState["dedication"]>) => {
       state.dedication = action.payload;
     },
@@ -147,6 +161,8 @@ export const {
   setCourse,
   setDedication,
   setResourceButtons,
+  setPeriodInitial,
+  setPeriodFinal,
 } = goalSlice.actions;
 
 export default goalSlice.reducer;
