@@ -107,9 +107,9 @@ export const AnimatedCard: React.FC<IPropsAnimatedCard> = (
           <View>
             <IconButton
               disabled={false}
-              icon="checkmark-outline"
-              size={props.sizeIcons}
-              color={props.iconsColor}
+              iconName="checkmark-outline"
+              iconSize={props.sizeIcons}
+              iconColor={props.iconsColor}
               actionTitle="Accept"
               onPress={() => {
                 console.log("here");
@@ -122,9 +122,9 @@ export const AnimatedCard: React.FC<IPropsAnimatedCard> = (
           <View>
             <IconButton
               disabled={false}
-              icon="close-outline"
-              size={24}
-              color={props.iconsColor}
+              iconName="close-outline"
+              iconSize={24}
+              iconColor={props.iconsColor}
               actionTitle="Cancel"
               customStyles={props.customStyleButtons}
               onPress={props.onPressCancel}

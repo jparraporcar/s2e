@@ -11,9 +11,9 @@ import { colorsPalette } from "../const/colors";
 
 interface IPropsIconButton {
   disabled: boolean;
-  icon: string;
-  size: number;
-  color: string;
+  iconName: string;
+  iconSize: number;
+  iconColor: string;
   onPress: (resource: any) => void;
   actionTitle?: string;
   customStyles?: {
@@ -24,9 +24,9 @@ interface IPropsIconButton {
 }
 export const IconButton: React.FC<IPropsIconButton> = ({
   disabled,
-  icon,
-  size,
-  color,
+  iconName,
+  iconSize,
+  iconColor,
   onPress,
   actionTitle,
   customStyles,
@@ -55,9 +55,9 @@ export const IconButton: React.FC<IPropsIconButton> = ({
           ]}
         >
           <Ionicons
-            name={icon}
-            size={size}
-            color={disabled ? styles.iconDisabled.color : color}
+            name={iconName}
+            size={iconSize}
+            color={disabled ? styles.iconDisabled.color : iconColor}
           />
         </View>
         <View>
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     paddingRight: 5,
   },
   pressed: {
-    opacity: 0.6,
+    opacity: 0.7,
   },
   containerButton: {
     flexDirection: "row",

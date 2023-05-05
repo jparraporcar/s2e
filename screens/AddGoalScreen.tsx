@@ -22,9 +22,10 @@ import {
 import Toast from "react-native-toast-message";
 import { bookSchema, courseSchema } from "../utils/ZodSchemas";
 import { Text } from "@rneui/base";
-import { Dedication } from "../components/Dedication";
+import { PeriodPicker } from "../components/PeriodPicker";
 import { Divider } from "../components/Divider";
 import { colorsPalette } from "../const/colors";
+import { Dedication } from "../components/Dedication";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -236,9 +237,9 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
           <View style={styles.iconButtonContainer}>
             <IconButton
               disabled={goalState.book.length > 0 ? true : false}
-              icon="book"
-              size={24}
-              color={colors.primary}
+              iconName="book"
+              iconSize={24}
+              iconColor={colors.primary}
               onPress={() => {
                 setCustomFormContent(labelledTextInputBook);
                 setAnimatedCardTitle("Book");
@@ -260,9 +261,9 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
           <View style={styles.iconButtonContainer}>
             <IconButton
               disabled={goalState.course.length > 0 ? true : false}
-              icon="laptop"
-              size={24}
-              color={colors.primary}
+              iconName="laptop"
+              iconSize={24}
+              iconColor={colors.primary}
               onPress={() => {
                 setCustomFormContent(labelledTextInputCourse);
                 setAnimatedCardTitle("Course");
@@ -313,7 +314,7 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
                   height: 75,
                 }}
               >
-                <Text>One book must be added</Text>
+                <Text>Add a book</Text>
               </View>
             )}
           </View>
@@ -340,7 +341,7 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
                   height: 75,
                 }}
               >
-                <Text>One course must be added</Text>
+                <Text>Add a course</Text>
               </View>
             )}
           </View>
@@ -352,11 +353,40 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
             borderBottomColor: colorsPalette.secondary_grey_90,
           }}
         />
-        <View style={styles.dedicationContainer}>
+        <View style={styles.periodContainer}>
           <View style={styles.selectPeriodContainer}>
             <Text>Select period</Text>
           </View>
+          <PeriodPicker />
+        </View>
+        <Divider
+          customStyles={{
+            width: SCREEN_WIDTH - 20,
+            borderBottomWidth: 1,
+            borderBottomColor: colorsPalette.secondary_grey_90,
+            marginBottom: 15,
+          }}
+        />
+        <View style={styles.dedicationContainer}>
           <Dedication />
+        </View>
+        <Divider
+          customStyles={{
+            width: SCREEN_WIDTH - 20,
+            borderBottomWidth: 1,
+            borderBottomColor: colorsPalette.secondary_grey_90,
+            marginBottom: 15,
+          }}
+        />
+        <View>
+          <IconButton
+            disabled={true}
+            iconName="rocket-outline"
+            actionTitle="Goal complete"
+            iconSize={24}
+            iconColor={colorsPalette.primary_yellow_100}
+            onPress={() => console.log("Goal complete")}
+          />
         </View>
       </View>
     </>
@@ -368,7 +398,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
-    padding: 20,
+    padding: 15,
   },
   containerButtons: {
     flexDirection: "row",
@@ -384,7 +414,7 @@ const styles = StyleSheet.create({
   iconButtonContainer: {
     marginHorizontal: 30,
   },
-  dedicationContainer: {
+  periodContainer: {
     flexDirection: "column",
     marginTop: 10,
     height: 100,
@@ -396,6 +426,13 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
+  },
+  dedicationContainer: {
+    flex: 1,
+    width: SCREEN_WIDTH,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 30,
   },
 });

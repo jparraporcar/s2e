@@ -13,6 +13,11 @@ export type TCourse = {
   Lectures: number;
 };
 
+export type TDayDedication = {
+  isSelected: boolean;
+  hours: number | undefined;
+};
+
 export interface IGoalState {
   name: string | undefined;
   book: TBook[];
@@ -22,41 +27,13 @@ export interface IGoalState {
     finalDay: string;
   };
   dedication: {
-    monday: {
-      isSelected: boolean;
-      name: "monday";
-      hours: number | undefined;
-    };
-    tuesday: {
-      isSelected: boolean;
-      name: "tuesday";
-      hours: number | undefined;
-    };
-    wednesday: {
-      isSelected: boolean;
-      name: "wednesday";
-      hours: number | undefined;
-    };
-    thursday: {
-      isSelected: boolean;
-      name: "thursday";
-      hours: number | undefined;
-    };
-    friday: {
-      isSelected: boolean;
-      name: "friday";
-      hours: number | undefined;
-    };
-    saturday: {
-      isSelected: boolean;
-      name: "saturday";
-      hours: number | undefined;
-    };
-    sunday: {
-      isSelected: boolean;
-      name: "sunday";
-      hours: number | undefined;
-    };
+    monday: TDayDedication;
+    tuesday: TDayDedication;
+    wednesday: TDayDedication;
+    thursday: TDayDedication;
+    friday: TDayDedication;
+    saturday: TDayDedication;
+    sunday: TDayDedication;
   };
   resourceButtons: {
     isDisabledAddBook: boolean;
@@ -75,37 +52,30 @@ const initialState: IGoalState = {
   dedication: {
     monday: {
       isSelected: false,
-      name: "monday",
       hours: undefined,
     },
     tuesday: {
       isSelected: false,
-      name: "tuesday",
       hours: undefined,
     },
     wednesday: {
       isSelected: false,
-      name: "wednesday",
       hours: undefined,
     },
     thursday: {
       isSelected: false,
-      name: "thursday",
       hours: undefined,
     },
     friday: {
       isSelected: false,
-      name: "friday",
       hours: undefined,
     },
     saturday: {
       isSelected: false,
-      name: "saturday",
       hours: undefined,
     },
     sunday: {
       isSelected: false,
-      name: "sunday",
       hours: undefined,
     },
   },
@@ -143,8 +113,23 @@ export const goalSlice = createSlice({
     setPeriodFinal: (state, action: PayloadAction<string>) => {
       state.period.finalDay = action.payload;
     },
-    setDedication: (state, action: PayloadAction<IGoalState["dedication"]>) => {
-      state.dedication = action.payload;
+    setDedicationHours: (
+      state,
+      action: PayloadAction<{
+        day: keyof IGoalState["dedication"];
+        hours: number;
+      }>
+    ) => {
+      state.dedication[action.payload.day].hours = action.payload.hours;
+    },
+    toggleSelectedDay: (
+      state,
+      action: PayloadAction<{
+        day: keyof IGoalState["dedication"];
+      }>
+    ) => {
+      state.dedication[action.payload.day].isSelected =
+        !state.dedication[action.payload.day].isSelected;
     },
     setResourceButtons: (
       state,
@@ -159,7 +144,8 @@ export const {
   setName,
   setBook,
   setCourse,
-  setDedication,
+  setDedicationHours,
+  toggleSelectedDay,
   setResourceButtons,
   setPeriodInitial,
   setPeriodFinal,
