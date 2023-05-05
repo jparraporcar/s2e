@@ -32,7 +32,7 @@ export const CustomModal: React.FC<IPropsCustomModal> = ({
 const styles = StyleSheet.create({
   containerMain: {
     flex: 1,
-    paddingTop: 200, //TODO: check this out, why the modal cannot be centered by setting justifyContent: 'center'?
+    paddingTop: 200,
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.7)",
   },

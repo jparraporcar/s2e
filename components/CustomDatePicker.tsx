@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: "white",
-    padding: 10,
+    padding: 5,
   },
   modalAcceptButtonContainer: {
     alignItems: "flex-end",

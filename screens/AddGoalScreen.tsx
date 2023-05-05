@@ -174,6 +174,8 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
     }
   }, [showToastSuccess]);
 
+  console.log(goalState);
+
   return (
     <>
       <Toast onHide={() => setShowToastSuccess(false)} />
@@ -382,7 +384,7 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
           <IconButton
             disabled={true}
             iconName="rocket-outline"
-            actionTitle="Goal complete"
+            actionTitle="Complete"
             iconSize={24}
             iconColor={colorsPalette.primary_yellow_100}
             onPress={() => console.log("Goal complete")}

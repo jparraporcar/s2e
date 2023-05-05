@@ -26,6 +26,7 @@ export interface IGoalState {
     initialDay: string;
     finalDay: string;
   };
+  currentToggleDay: keyof IGoalState["dedication"];
   dedication: {
     monday: TDayDedication;
     tuesday: TDayDedication;
@@ -49,6 +50,7 @@ const initialState: IGoalState = {
     initialDay: new Date().toISOString().substring(0, 10),
     finalDay: new Date().toISOString().substring(0, 10),
   },
+  currentToggleDay: "monday",
   dedication: {
     monday: {
       isSelected: false,
@@ -131,6 +133,12 @@ export const goalSlice = createSlice({
       state.dedication[action.payload.day].isSelected =
         !state.dedication[action.payload.day].isSelected;
     },
+    setCurrentToggleDay: (
+      state,
+      action: PayloadAction<keyof IGoalState["dedication"]>
+    ) => {
+      state.currentToggleDay = action.payload;
+    },
     setResourceButtons: (
       state,
       action: PayloadAction<IGoalState["resourceButtons"]>
@@ -149,6 +157,7 @@ export const {
   setResourceButtons,
   setPeriodInitial,
   setPeriodFinal,
+  setCurrentToggleDay,
 } = goalSlice.actions;
 
 export default goalSlice.reducer;

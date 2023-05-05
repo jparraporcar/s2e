@@ -1,13 +1,16 @@
-import React from "react";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { Dimensions, Modal, StyleSheet, Text, View } from "react-native";
 import { colorsPalette } from "../const/colors";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import goalSlice, {
   IGoalState,
+  setCurrentToggleDay,
+  setDedicationHours,
   toggleSelectedDay,
 } from "../store/slices/goalSlice";
 import { DayView } from "./DayView";
+import { CustomTimePicker } from "./CustomTimePicker";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 // TODO: how to transform the keys in IGoalState into an array like the following
@@ -23,33 +26,64 @@ const daysArray = [
 ];
 
 export const Dedication: React.FC = (): JSX.Element => {
+  const [showCustomPicker, setShowCustomPicker] = useState<boolean | undefined>(
+    undefined
+  );
   const goalState = useAppSelector((state) => state.goal);
   const dispatch = useAppDispatch();
   console.log(goalState.dedication);
   return (
-    <View style={styles.mainContainer}>
-      {daysArray.map((dayEl: string, index: number) => (
-        <DayView
-          weekday={dayEl}
-          onPress={() =>
-            dispatch(
-              toggleSelectedDay({
-                day: dayEl as keyof IGoalState["dedication"],
-              })
-            )
-          }
-          customStyles={{
-            weekContainer: {
-              backgroundColor: goalState.dedication[
-                dayEl as keyof IGoalState["dedication"]
-              ].isSelected
-                ? colorsPalette.primary_yellow_100
-                : colorsPalette.secondary_grey_80,
-            },
-          }}
-        />
-      ))}
-    </View>
+    <>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showCustomPicker}
+      >
+        <View style={styles.modalContainer}>
+          <CustomTimePicker
+            dispatchAction={(
+              day: keyof IGoalState["dedication"],
+              hours: number
+            ) => dispatch(setDedicationHours({ day: day, hours: hours }))}
+            onPressAccept={() => setShowCustomPicker(false)}
+            currentToggleDay={goalState.currentToggleDay}
+          />
+        </View>
+      </Modal>
+      <View style={styles.mainContainer}>
+        {daysArray.map((dayEl: string, index: number) => (
+          <DayView
+            key={index}
+            weekday={dayEl}
+            onPress={() => {
+              if (
+                !goalState.dedication[dayEl as keyof IGoalState["dedication"]]
+                  .isSelected
+              ) {
+                setShowCustomPicker(true);
+              }
+              dispatch(
+                setCurrentToggleDay(dayEl as keyof IGoalState["dedication"])
+              );
+              dispatch(
+                toggleSelectedDay({
+                  day: dayEl as keyof IGoalState["dedication"],
+                })
+              );
+            }}
+            customStyles={{
+              weekContainer: {
+                backgroundColor: goalState.dedication[
+                  dayEl as keyof IGoalState["dedication"]
+                ].isSelected
+                  ? colorsPalette.primary_yellow_100
+                  : colorsPalette.secondary_grey_80,
+              },
+            }}
+          />
+        ))}
+      </View>
+    </>
   );
 };
 
@@ -58,10 +92,15 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     borderWidth: 0.5,
-    justifyContent: "center",
+    justifyContent: "space-evenly",
     alignItems: "center",
     width: SCREEN_WIDTH - 40,
     borderRadius: 10,
     backgroundColor: colorsPalette.primary_yellow_80,
+    paddingHorizontal: 3,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
   },
 });
