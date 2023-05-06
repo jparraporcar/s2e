@@ -7,17 +7,21 @@ import {
 } from "react-native";
 import { LabelledTextInput } from "../components/LabelledTextInput";
 import IconButton from "../components/IconButton";
-import { useTheme } from "@react-navigation/native";
+import { useNavigation, useTheme } from "@react-navigation/native";
 import { AnimatedCard } from "../components/AnimatedCard";
 import { CustomModal } from "../components/CustomModal";
 import { Resource } from "../components/Resource";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
+  IGoalState,
   TBook,
   TCourse,
   setBook,
   setCourse,
+  setIsValidAddGoalInfo,
   setName,
+  setResetGoalInput,
+  setStartAddGoalInfoValidation,
 } from "../store/slices/goalSlice";
 import Toast from "react-native-toast-message";
 import { bookSchema, courseSchema } from "../utils/ZodSchemas";
@@ -26,6 +30,8 @@ import { PeriodPicker } from "../components/PeriodPicker";
 import { Divider } from "../components/Divider";
 import { colorsPalette } from "../const/colors";
 import { Dedication } from "../components/Dedication";
+import { validateAddGoalInputInfo } from "../utils/utils";
+import { setAddGoal } from "../store/slices/goalsListSlice";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -75,16 +81,21 @@ const labelledTextInputCourse = [
   },
 ];
 
-export const AddGoalScreen: React.FC = (): JSX.Element => {
+export const AddGoalScreen: React.FC = (props): JSX.Element => {
   const { colors } = useTheme();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [showToastSuccess, setShowToastSuccess] = useState(false);
   const [animatedCardTitle, setAnimatedCardTitle] = useState<
     "Book" | "Course" | ""
   >("");
   const [customFormContent, setCustomFormContent] = useState([] as any);
+  const [showOuterToast, setShowOuterToast] = useState<{
+    type: string | undefined;
+    value: boolean;
+  }>({ type: undefined, value: false });
   const goalState = useAppSelector((state) => state.goal);
+  const goalsListState = useAppSelector((state) => state.goalsList);
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
 
   const handleAddBook = (animatedCardTitle: string) => {
     if (animatedCardTitle === "Book") {
@@ -104,7 +115,6 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
           });
           dispatch(setBook(resource));
           setModalVisible(false);
-          setShowToastSuccess(true);
         } catch (err: any) {
           err.errors.map((err: any) =>
             Toast.show({
@@ -137,7 +147,6 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
           });
           dispatch(setCourse(resource as TCourse));
           setModalVisible(false);
-          setShowToastSuccess(true);
         } catch (err: any) {
           err.errors.map((err: any) =>
             Toast.show({
@@ -163,22 +172,62 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
   };
 
   useEffect(() => {
-    if (showToastSuccess && animatedCardTitle) {
+    let isAllValidOut;
+    if (goalState.validation.startAddGoalInfoValidation) {
+      const [isAllValid, result] = validateAddGoalInputInfo(goalState) as any; //TODO: find issue with the typing here
+      isAllValidOut = isAllValid;
+      console.log(isAllValidOut, "isAllValidOutIn");
+      console.log(result, "result");
+      if (isAllValidOut) {
+        dispatch(setIsValidAddGoalInfo(true));
+        setShowOuterToast({ type: "success", value: true });
+      } else {
+        setShowOuterToast({ type: "error", value: true });
+      }
+    }
+    return () => {
+      dispatch(setStartAddGoalInfoValidation(false));
+    };
+  }, [goalState.validation.startAddGoalInfoValidation]);
+
+  useEffect(() => {
+    if (showOuterToast.type === "success") {
       Toast.show({
         type: "success",
-        text1: `New ${animatedCardTitle} added`,
+        text1: "success",
+        text2: "success",
+        position: "bottom",
+        visibilityTime: 2000,
+        bottomOffset: 20,
+      });
+      dispatch(setAddGoal(goalState));
+      setTimeout(() => navigation.goBack(), 2000);
+    }
+    if (showOuterToast.type === "error") {
+      Toast.show({
+        type: "error",
+        text1: "error",
+        text2: "error",
         position: "bottom",
         visibilityTime: 2000,
         bottomOffset: 20,
       });
     }
-  }, [showToastSuccess]);
+    return () => {
+      console.log("route unmounted");
+      dispatch(setResetGoalInput());
+    };
+  }, [showOuterToast]);
 
   console.log(goalState);
 
   return (
     <>
-      <Toast onHide={() => setShowToastSuccess(false)} />
+      {showOuterToast.value && (
+        <View style={{ zIndex: 2000, top: 600, backgroundColor: "black" }}>
+          <Toast />
+        </View>
+      )}
       <CustomModal
         toast={<Toast />}
         setModalVisible={setModalVisible}
@@ -382,12 +431,15 @@ export const AddGoalScreen: React.FC = (): JSX.Element => {
         />
         <View>
           <IconButton
-            disabled={true}
+            disabled={false}
             iconName="rocket-outline"
             actionTitle="Complete"
             iconSize={24}
             iconColor={colorsPalette.primary_yellow_100}
-            onPress={() => console.log("Goal complete")}
+            onPress={() => {
+              console.log("pressing complete button");
+              dispatch(setStartAddGoalInfoValidation(true));
+            }}
           />
         </View>
       </View>

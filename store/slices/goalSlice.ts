@@ -15,11 +15,11 @@ export type TCourse = {
 
 export type TDayDedication = {
   isSelected: boolean;
-  hours: number | undefined;
+  hours: number;
 };
 
 export interface IGoalState {
-  name: string | undefined;
+  name: string;
   book: TBook[];
   course: TCourse[];
   period: {
@@ -36,14 +36,14 @@ export interface IGoalState {
     saturday: TDayDedication;
     sunday: TDayDedication;
   };
-  resourceButtons: {
-    isDisabledAddBook: boolean;
-    isDisabledAddCourse: boolean;
+  validation: {
+    startAddGoalInfoValidation: boolean | undefined;
+    isValidAddGoalInfo: boolean | undefined;
   };
 }
 
-const initialState: IGoalState = {
-  name: undefined,
+export const initialState: IGoalState = {
+  name: "",
   book: [],
   course: [],
   period: {
@@ -54,36 +54,36 @@ const initialState: IGoalState = {
   dedication: {
     monday: {
       isSelected: false,
-      hours: undefined,
+      hours: 0,
     },
     tuesday: {
       isSelected: false,
-      hours: undefined,
+      hours: 0,
     },
     wednesday: {
       isSelected: false,
-      hours: undefined,
+      hours: 0,
     },
     thursday: {
       isSelected: false,
-      hours: undefined,
+      hours: 0,
     },
     friday: {
       isSelected: false,
-      hours: undefined,
+      hours: 0,
     },
     saturday: {
       isSelected: false,
-      hours: undefined,
+      hours: 0,
     },
     sunday: {
       isSelected: false,
-      hours: undefined,
+      hours: 0,
     },
   },
-  resourceButtons: {
-    isDisabledAddBook: false,
-    isDisabledAddCourse: false,
+  validation: {
+    startAddGoalInfoValidation: undefined,
+    isValidAddGoalInfo: undefined,
   },
 };
 
@@ -139,11 +139,14 @@ export const goalSlice = createSlice({
     ) => {
       state.currentToggleDay = action.payload;
     },
-    setResourceButtons: (
-      state,
-      action: PayloadAction<IGoalState["resourceButtons"]>
-    ) => {
-      state.resourceButtons = action.payload;
+    setStartAddGoalInfoValidation: (state, action: PayloadAction<boolean>) => {
+      state.validation.startAddGoalInfoValidation = action.payload;
+    },
+    setIsValidAddGoalInfo: (state, action: PayloadAction<boolean>) => {
+      state.validation.isValidAddGoalInfo = action.payload;
+    },
+    setResetGoalInput: () => {
+      return initialState;
     },
   },
 });
@@ -154,10 +157,12 @@ export const {
   setCourse,
   setDedicationHours,
   toggleSelectedDay,
-  setResourceButtons,
   setPeriodInitial,
   setPeriodFinal,
   setCurrentToggleDay,
+  setStartAddGoalInfoValidation,
+  setIsValidAddGoalInfo,
+  setResetGoalInput,
 } = goalSlice.actions;
 
 export default goalSlice.reducer;

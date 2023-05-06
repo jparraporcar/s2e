@@ -27,11 +27,10 @@ const daysArray = [
 
 export const Dedication: React.FC = (): JSX.Element => {
   const [showCustomPicker, setShowCustomPicker] = useState<boolean | undefined>(
-    undefined
+    false
   );
   const goalState = useAppSelector((state) => state.goal);
   const dispatch = useAppDispatch();
-  console.log(goalState.dedication);
   return (
     <>
       <Modal
@@ -70,6 +69,13 @@ export const Dedication: React.FC = (): JSX.Element => {
                   day: dayEl as keyof IGoalState["dedication"],
                 })
               );
+              console.log("eiii");
+              //   dispatch(
+              //     setDedicationHours({
+              //       day: dayEl as keyof IGoalState["dedication"],
+              //       hours: 0,
+              //     })
+              // );
             }}
             customStyles={{
               weekContainer: {
