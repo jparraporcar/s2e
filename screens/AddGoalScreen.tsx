@@ -9,7 +9,7 @@ import { LabelledTextInput } from "../components/LabelledTextInput";
 import IconButton from "../components/IconButton";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { AnimatedCard } from "../components/AnimatedCard";
-import { CustomModal } from "../components/CustomModal";
+import { CustomModalFade } from "../components/CustomModalFade";
 import { Resource } from "../components/Resource";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
@@ -18,20 +18,22 @@ import {
   TCourse,
   setBook,
   setCourse,
-  setIsValidAddGoalInfo,
   setName,
   setResetGoalInput,
-  setStartAddGoalInfoValidation,
 } from "../store/slices/goalSlice";
-import Toast from "react-native-toast-message";
+import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import { bookSchema, courseSchema } from "../utils/ZodSchemas";
 import { Text } from "@rneui/base";
 import { PeriodPicker } from "../components/PeriodPicker";
 import { Divider } from "../components/Divider";
 import { colorsPalette } from "../const/colors";
 import { Dedication } from "../components/Dedication";
-import { validateAddGoalInputInfo } from "../utils/utils";
 import { setAddGoal } from "../store/slices/goalsListSlice";
+import {
+  GoalValidationState,
+  setGoalStateValidation,
+  setResetIsValidationPassed,
+} from "../store/slices/goalValidationSlice";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -88,16 +90,12 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
     "Book" | "Course" | ""
   >("");
   const [customFormContent, setCustomFormContent] = useState([] as any);
-  const [showOuterToast, setShowOuterToast] = useState<{
-    type: string | undefined;
-    value: boolean;
-  }>({ type: undefined, value: false });
   const goalState = useAppSelector((state) => state.goal);
-  const goalsListState = useAppSelector((state) => state.goalsList);
+  const goalValidationState = useAppSelector((state) => state.goalValidation);
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
 
-  const handleAddBook = (animatedCardTitle: string) => {
+  const handleAddResource = (animatedCardTitle: string) => {
     if (animatedCardTitle === "Book") {
       return (resource: TBook) => {
         try {
@@ -171,64 +169,59 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
     dispatch(setCourse(undefined));
   };
 
+  const handleAddGoalToList = () => {
+    console.log("handleAddGoalToList");
+    dispatch(setGoalStateValidation(goalState));
+  };
+
+  // to bre triggered once goalStateValidation changes due to a click in the 'Complete' button
+  // "dispatch(setResetIsValidationPassed())" to avoid showing the toast when rerendering not due to a click
   useEffect(() => {
-    let isAllValidOut;
-    if (goalState.validation.startAddGoalInfoValidation) {
-      const [isAllValid, result] = validateAddGoalInputInfo(goalState) as any; //TODO: find issue with the typing here
-      isAllValidOut = isAllValid;
-      console.log(isAllValidOut, "isAllValidOutIn");
-      console.log(result, "result");
-      if (isAllValidOut) {
-        dispatch(setIsValidAddGoalInfo(true));
-        setShowOuterToast({ type: "success", value: true });
+    if (goalValidationState.isValidationPassed !== undefined) {
+      if (goalValidationState.isValidationPassed) {
+        Toast.show({
+          type: "success",
+          text1: "Validation success",
+          text2: "Validation success",
+          position: "bottom",
+          visibilityTime: 2000,
+          bottomOffset: 20,
+        });
+        dispatch(setResetGoalInput());
+        dispatch(setAddGoal(goalState));
+        setTimeout(() => navigation.goBack(), 2000);
       } else {
-        setShowOuterToast({ type: "error", value: true });
+        Object.keys(goalValidationState.result).map((key) => {
+          if (
+            goalValidationState.result[
+              key as keyof GoalValidationState["result"]
+            ].message !== undefined &&
+            goalValidationState.result[
+              key as keyof GoalValidationState["result"]
+            ].message !== "Success"
+          ) {
+            Toast.show({
+              type: "error",
+              text1: "Validation error",
+              text2:
+                goalValidationState.result[
+                  key as keyof GoalValidationState["result"]
+                ].message,
+              position: "bottom",
+              visibilityTime: 2000,
+              bottomOffset: 20,
+            });
+          }
+        });
       }
+      dispatch(setResetIsValidationPassed());
     }
-    return () => {
-      dispatch(setStartAddGoalInfoValidation(false));
-    };
-  }, [goalState.validation.startAddGoalInfoValidation]);
-
-  useEffect(() => {
-    if (showOuterToast.type === "success") {
-      Toast.show({
-        type: "success",
-        text1: "success",
-        text2: "success",
-        position: "bottom",
-        visibilityTime: 2000,
-        bottomOffset: 20,
-      });
-      dispatch(setAddGoal(goalState));
-      setTimeout(() => navigation.goBack(), 2000);
-    }
-    if (showOuterToast.type === "error") {
-      Toast.show({
-        type: "error",
-        text1: "error",
-        text2: "error",
-        position: "bottom",
-        visibilityTime: 2000,
-        bottomOffset: 20,
-      });
-    }
-    return () => {
-      console.log("route unmounted");
-      dispatch(setResetGoalInput());
-    };
-  }, [showOuterToast]);
-
-  console.log(goalState);
+  }, [goalValidationState]);
 
   return (
     <>
-      {showOuterToast.value && (
-        <View style={{ zIndex: 2000, top: 600, backgroundColor: "black" }}>
-          <Toast />
-        </View>
-      )}
-      <CustomModal
+      <Toast />
+      <CustomModalFade
         toast={<Toast />}
         setModalVisible={setModalVisible}
         modalVisible={modalVisible}
@@ -258,13 +251,13 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
           iconsColor={colors.primary}
           sizeIcons={24}
           onPressAccept={(resource: any) => {
-            handleAddBook(animatedCardTitle)!(resource);
+            handleAddResource(animatedCardTitle)!(resource);
           }}
           onPressCancel={() => setModalVisible(false)}
           labelledTextInput={customFormContent}
           labelledTextInputMaxLength={30}
         ></AnimatedCard>
-      </CustomModal>
+      </CustomModalFade>
       <View style={styles.containerMain}>
         <View style={styles.containerLabelledTextInput}>
           <LabelledTextInput
@@ -436,10 +429,7 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
             actionTitle="Complete"
             iconSize={24}
             iconColor={colorsPalette.primary_yellow_100}
-            onPress={() => {
-              console.log("pressing complete button");
-              dispatch(setStartAddGoalInfoValidation(true));
-            }}
+            onPress={handleAddGoalToList}
           />
         </View>
       </View>

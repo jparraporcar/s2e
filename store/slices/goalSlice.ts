@@ -36,10 +36,6 @@ export interface IGoalState {
     saturday: TDayDedication;
     sunday: TDayDedication;
   };
-  validation: {
-    startAddGoalInfoValidation: boolean | undefined;
-    isValidAddGoalInfo: boolean | undefined;
-  };
 }
 
 export const initialState: IGoalState = {
@@ -80,10 +76,6 @@ export const initialState: IGoalState = {
       isSelected: false,
       hours: 0,
     },
-  },
-  validation: {
-    startAddGoalInfoValidation: undefined,
-    isValidAddGoalInfo: undefined,
   },
 };
 
@@ -139,12 +131,6 @@ export const goalSlice = createSlice({
     ) => {
       state.currentToggleDay = action.payload;
     },
-    setStartAddGoalInfoValidation: (state, action: PayloadAction<boolean>) => {
-      state.validation.startAddGoalInfoValidation = action.payload;
-    },
-    setIsValidAddGoalInfo: (state, action: PayloadAction<boolean>) => {
-      state.validation.isValidAddGoalInfo = action.payload;
-    },
     setResetGoalInput: () => {
       return initialState;
     },
@@ -160,8 +146,6 @@ export const {
   setPeriodInitial,
   setPeriodFinal,
   setCurrentToggleDay,
-  setStartAddGoalInfoValidation,
-  setIsValidAddGoalInfo,
   setResetGoalInput,
 } = goalSlice.actions;
 

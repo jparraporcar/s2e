@@ -27,7 +27,6 @@ export const CustomTimePicker: React.FC<IPropsCustomTimePicker> = (props) => {
 
   useEffect(() => {
     const hours = selectedHour + selectedMinute / 60;
-    console.log(hours);
     props.dispatchAction(props.currentToggleDay, hours);
   }, [selectedHour, selectedMinute]);
 

@@ -1,5 +1,5 @@
-import React, { PropsWithChildren, ReactNode, useState } from "react";
-import { Modal, Alert, View, Button, StyleSheet } from "react-native";
+import React, { PropsWithChildren, ReactNode } from "react";
+import { Modal, Alert, View, StyleSheet } from "react-native";
 
 interface IPropsCustomModal extends PropsWithChildren {
   modalVisible: boolean;
@@ -7,7 +7,7 @@ interface IPropsCustomModal extends PropsWithChildren {
   toast: ReactNode;
 }
 
-export const CustomModal: React.FC<IPropsCustomModal> = ({
+export const CustomModalFade: React.FC<IPropsCustomModal> = ({
   modalVisible,
   setModalVisible,
   children,

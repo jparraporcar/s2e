@@ -14,8 +14,6 @@ export const PeriodPicker: React.FC = () => {
     dispatch(setPeriodInitial(date.toISOString().substring(0, 10)));
   const onChangeFinalDay = (date: Date) =>
     dispatch(setPeriodFinal(date.toISOString().substring(0, 10)));
-
-  console.log(periodState);
   return (
     <View style={styles.mainContainer}>
       <View>

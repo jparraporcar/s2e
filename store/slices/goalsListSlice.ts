@@ -1,11 +1,27 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IGoalState } from "./goalSlice";
+import { IGoalState, TBook, TCourse, TDayDedication } from "./goalSlice";
 
-export interface IGoalsListItem extends IGoalState {
+export type IGoalsListItem = {
   id: number;
-}
+  name: string;
+  book: TBook[];
+  course: TCourse[];
+  period: {
+    initialDay: string;
+    finalDay: string;
+  };
+  dedication: {
+    monday: TDayDedication;
+    tuesday: TDayDedication;
+    wednesday: TDayDedication;
+    thursday: TDayDedication;
+    friday: TDayDedication;
+    saturday: TDayDedication;
+    sunday: TDayDedication;
+  };
+};
 
-type IGoalsListState = IGoalsListItem[];
+export type IGoalsListState = IGoalsListItem[];
 
 export const initialState = [] as IGoalsListState;
 
@@ -15,6 +31,12 @@ export const goalSlice = createSlice({
   reducers: {
     setAddGoal: (state, action: PayloadAction<IGoalState>) => {
       state.push({ ...action.payload, id: Math.random() });
+    },
+    setDeleteGoal: (state, action: PayloadAction<number>) => {
+      state.filter((goal) => goal.id !== action.payload);
+    },
+    setEditGoal: (state, action: PayloadAction<IGoalsListState>) => {
+      const editedGoal = state.find((goal) => goal.id);
     },
   },
 });

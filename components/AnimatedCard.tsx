@@ -112,8 +112,6 @@ export const AnimatedCard: React.FC<IPropsAnimatedCard> = (
               iconColor={props.iconsColor}
               actionTitle="Accept"
               onPress={() => {
-                console.log("here");
-                console.log(textInputs, "textInputs");
                 props.onPressAccept(textInputs);
               }}
               customStyles={props.customStyleButtons}

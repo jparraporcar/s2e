@@ -69,13 +69,6 @@ export const Dedication: React.FC = (): JSX.Element => {
                   day: dayEl as keyof IGoalState["dedication"],
                 })
               );
-              console.log("eiii");
-              //   dispatch(
-              //     setDedicationHours({
-              //       day: dayEl as keyof IGoalState["dedication"],
-              //       hours: 0,
-              //     })
-              // );
             }}
             customStyles={{
               weekContainer: {
