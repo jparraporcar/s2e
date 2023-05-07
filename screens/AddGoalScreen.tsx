@@ -9,7 +9,7 @@ import { LabelledTextInput } from "../components/LabelledTextInput";
 import IconButton from "../components/IconButton";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { AnimatedCard } from "../components/AnimatedCard";
-import { CustomModalFade } from "../components/CustomModalFade";
+import { CustomModal } from "../components/CustomModal";
 import { Resource } from "../components/Resource";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
@@ -86,6 +86,7 @@ const labelledTextInputCourse = [
 export const AddGoalScreen: React.FC = (props): JSX.Element => {
   const { colors } = useTheme();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [modalVisibleOuter, setModalVisibleOuter] = useState<boolean>(false);
   const [animatedCardTitle, setAnimatedCardTitle] = useState<
     "Book" | "Course" | ""
   >("");
@@ -172,6 +173,7 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
   const handleAddGoalToList = () => {
     console.log("handleAddGoalToList");
     dispatch(setGoalStateValidation(goalState));
+    setModalVisibleOuter(true);
   };
 
   // to bre triggered once goalStateValidation changes due to a click in the 'Complete' button
@@ -214,14 +216,23 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
           }
         });
       }
+      setTimeout(() => setModalVisibleOuter(false), 2000);
       dispatch(setResetIsValidationPassed());
     }
   }, [goalValidationState]);
 
   return (
     <>
-      <Toast />
-      <CustomModalFade
+      <CustomModal
+        animationType="none"
+        transparent={true}
+        modalVisible={modalVisibleOuter}
+      >
+        <Toast />
+      </CustomModal>
+      <CustomModal
+        animationType="fade"
+        transparent={true}
         toast={<Toast />}
         setModalVisible={setModalVisible}
         modalVisible={modalVisible}
@@ -257,7 +268,7 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
           labelledTextInput={customFormContent}
           labelledTextInputMaxLength={30}
         ></AnimatedCard>
-      </CustomModalFade>
+      </CustomModal>
       <View style={styles.containerMain}>
         <View style={styles.containerLabelledTextInput}>
           <LabelledTextInput
