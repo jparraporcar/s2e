@@ -9,6 +9,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { TextInput } from "react-native";
+import { colorsPalette } from "../const/colors";
 
 interface IPropsLabelledTextInput {
   labelText: string;
@@ -72,7 +73,11 @@ export const LabelledTextInput: React.FC<IPropsLabelledTextInput> = (
           value={props.value}
           keyboardType={props.keyboardType}
           maxLength={props.maxLength}
-          style={props.customStyles ? props.customStyles.textInput : undefined}
+          style={[
+            styles.textInput,
+            { width: "100%" },
+            props.customStyles ? props.customStyles.textInput : undefined,
+          ]}
         />
       </View>
     </View>
@@ -89,6 +94,12 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   containerTextLabel: {
+    fontSize: 16,
     marginRight: 10,
+  },
+  textInput: {
+    fontSize: 16,
+    borderBottomWidth: 0.5,
+    borderBottomColor: colorsPalette.secondary_grey_90,
   },
 });

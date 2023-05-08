@@ -13,7 +13,6 @@ import { CustomModal } from "../components/CustomModal";
 import { Resource } from "../components/Resource";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
-  IGoalState,
   TBook,
   TCourse,
   setBook,
@@ -21,7 +20,7 @@ import {
   setName,
   setResetGoalInput,
 } from "../store/slices/goalSlice";
-import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
+import Toast from "react-native-toast-message";
 import { bookSchema, courseSchema } from "../utils/ZodSchemas";
 import { Text } from "@rneui/base";
 import { PeriodPicker } from "../components/PeriodPicker";
@@ -40,46 +39,54 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 const labelledTextInputBook = [
   {
     labelText: "Name",
-    placeholder: "input book name",
+    placeholder: "input Name",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
+    maxLength: 30,
   },
   {
     labelText: "Author",
-    placeholder: "input name of the Author",
+    placeholder: "input Author",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
+    maxLength: 30,
   },
   {
     labelText: "Pages",
-    placeholder: "input n. of pages",
+    placeholder: "input Pages",
     keyboardType: "numbers-and-punctuation" as KeyboardTypeOptions,
+    maxLength: 3,
   },
   {
     labelText: "Year",
-    placeholder: "input year of edition",
+    placeholder: "input Year",
     keyboardType: "numbers-and-punctuation" as KeyboardTypeOptions,
+    maxLength: 4,
   },
 ];
 
 const labelledTextInputCourse = [
   {
     labelText: "Name",
-    placeholder: "input course name",
+    placeholder: "input Name",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
+    maxLength: 30,
   },
   {
     labelText: "Instructor",
-    placeholder: "input name of the instructor",
+    placeholder: "input Instructor",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
+    maxLength: 30,
   },
   {
     labelText: "Sections",
-    placeholder: "input number of sections",
+    placeholder: "input Sections",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
+    maxLength: 2,
   },
   {
     labelText: "Lectures",
-    placeholder: "input number of subsections",
+    placeholder: "input Lectures",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
+    maxLength: 3,
   },
 ];
 
@@ -266,7 +273,6 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
           }}
           onPressCancel={() => setModalVisible(false)}
           labelledTextInput={customFormContent}
-          labelledTextInputMaxLength={30}
         ></AnimatedCard>
       </CustomModal>
       <View style={styles.containerMain}>

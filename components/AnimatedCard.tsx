@@ -36,8 +36,8 @@ export interface IPropsAnimatedCard extends PropsWithChildren {
     labelText: string;
     placeholder: string;
     keyboardType: KeyboardTypeOptions;
+    maxLength: number;
   }[];
-  labelledTextInputMaxLength: number;
   labelledTextInputCustomStyles?: {
     ["containerMain"]?: ViewStyle;
     ["containerTextLabel"]?: ViewStyle;
@@ -93,7 +93,7 @@ export const AnimatedCard: React.FC<IPropsAnimatedCard> = (
               key={index}
               placeholder={item.placeholder}
               labelText={item.labelText}
-              maxLength={30}
+              maxLength={item.maxLength}
               keyboardType={item.keyboardType}
               value={textInputs[index]}
               onChangeText={(text) =>

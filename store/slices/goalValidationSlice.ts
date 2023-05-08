@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IGoalState, TBook, TCourse, TDayDedication } from "./goalSlice";
-import { isPeriodValid } from "../../utils/utils";
+import { isPeriodValidTotal } from "../../utils/utils";
 
 export interface GoalValidationState {
   result: {
@@ -70,13 +70,13 @@ export const goalValidationSlice = createSlice({
       }
 
       if (
-        !isPeriodValid(
+        !isPeriodValidTotal(
           new Date(action.payload.period.initialDay),
           new Date(action.payload.period.finalDay)
         )
       ) {
         state.result.period.isValid = false;
-        state.result.period.message = "Minimum date to start goal is today";
+        state.result.period.message = "The period introduced is wrong";
       } else {
         state.result.period.isValid = true;
         state.result.period.message = "Success";
