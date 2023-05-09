@@ -24,7 +24,7 @@ import Toast from "react-native-toast-message";
 import { bookSchema, courseSchema } from "../utils/ZodSchemas";
 import { Text } from "@rneui/base";
 import { PeriodPicker } from "../components/PeriodPicker";
-import { Divider } from "../components/Divider";
+import { CustomDivider } from "../components/CustomDivider";
 import { colorsPalette } from "../const/colors";
 import { Dedication } from "../components/Dedication";
 import { setAddGoal } from "../store/slices/goalsListSlice";
@@ -50,13 +50,13 @@ const labelledTextInputBook = [
     maxLength: 30,
   },
   {
-    labelText: "Pages",
+    labelText: "N. of Pages",
     placeholder: "input Pages",
     keyboardType: "numbers-and-punctuation" as KeyboardTypeOptions,
     maxLength: 3,
   },
   {
-    labelText: "Year",
+    labelText: "Year of edition",
     placeholder: "input Year",
     keyboardType: "numbers-and-punctuation" as KeyboardTypeOptions,
     maxLength: 4,
@@ -77,13 +77,13 @@ const labelledTextInputCourse = [
     maxLength: 30,
   },
   {
-    labelText: "Sections",
+    labelText: "N. of Sections",
     placeholder: "input Sections",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
     maxLength: 2,
   },
   {
-    labelText: "Lectures",
+    labelText: "N. of Lectures",
     placeholder: "input Lectures",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
     maxLength: 3,
@@ -344,11 +344,13 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
             />
           </View>
         </View>
-        <Divider
+        <CustomDivider
           customStyles={{
-            width: SCREEN_WIDTH - 20,
-            borderBottomWidth: 0.5,
-            borderBottomColor: colorsPalette.secondary_grey_90,
+            divider: {
+              width: SCREEN_WIDTH - 20,
+              borderBottomWidth: 0.5,
+              borderBottomColor: colorsPalette.secondary_grey_90,
+            },
           }}
         />
         <View style={styles.containerResources}>
@@ -407,11 +409,13 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
             )}
           </View>
         </View>
-        <Divider
+        <CustomDivider
           customStyles={{
-            width: SCREEN_WIDTH - 20,
-            borderBottomWidth: 1,
-            borderBottomColor: colorsPalette.secondary_grey_90,
+            divider: {
+              width: SCREEN_WIDTH - 20,
+              borderBottomWidth: 1,
+              borderBottomColor: colorsPalette.secondary_grey_90,
+            },
           }}
         />
         <View style={styles.periodContainer}>
@@ -420,23 +424,27 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
           </View>
           <PeriodPicker />
         </View>
-        <Divider
+        <CustomDivider
           customStyles={{
-            width: SCREEN_WIDTH - 20,
-            borderBottomWidth: 1,
-            borderBottomColor: colorsPalette.secondary_grey_90,
-            marginBottom: 15,
+            divider: {
+              width: SCREEN_WIDTH - 20,
+              borderBottomWidth: 1,
+              borderBottomColor: colorsPalette.secondary_grey_90,
+              marginBottom: 15,
+            },
           }}
         />
         <View style={styles.dedicationContainer}>
           <Dedication />
         </View>
-        <Divider
+        <CustomDivider
           customStyles={{
-            width: SCREEN_WIDTH - 20,
-            borderBottomWidth: 1,
-            borderBottomColor: colorsPalette.secondary_grey_90,
-            marginBottom: 15,
+            divider: {
+              width: SCREEN_WIDTH - 20,
+              borderBottomWidth: 1,
+              borderBottomColor: colorsPalette.secondary_grey_90,
+              marginBottom: 15,
+            },
           }}
         />
         <View>

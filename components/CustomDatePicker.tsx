@@ -14,7 +14,7 @@ import DateTimePicker, {
   DateTimePickerEvent,
   Event,
 } from "@react-native-community/datetimepicker";
-import { Divider } from "./Divider";
+import { CustomDivider } from "./CustomDivider";
 import { colorsPalette } from "../const/colors";
 
 type IPropsDatePicker = {
@@ -54,7 +54,7 @@ export const CustomDatePicker: React.FC<IPropsDatePicker> = (
             <View style={styles.modalAcceptButtonContainer}>
               <Button title="Accept" onPress={() => setShowModal(false)} />
             </View>
-            <Divider
+            <CustomDivider
               customStyles={{
                 width: SCREEN_WIDTH - 20,
                 borderBottomWidth: 1,
