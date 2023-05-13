@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type TBook = {
-  Name: string;
-  Author: string;
-  Pages: number;
-  Year: number;
+  name: string;
+  author: string;
+  pages: number;
+  year: number;
 };
 export type TCourse = {
-  Name: string;
-  Instructor: string;
-  Sections: number;
-  Lectures: number;
+  name: string;
+  instructor: string;
+  sections: number;
+  lectures: number;
 };
 
 export type TDayDedication = {

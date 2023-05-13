@@ -33,6 +33,7 @@ export interface IPropsAnimatedCard extends PropsWithChildren {
   onPressAccept: (resource: any) => void;
   onPressCancel: () => void;
   labelledTextInput: {
+    fieldName: string;
     labelText: string;
     placeholder: string;
     keyboardType: KeyboardTypeOptions;
@@ -52,9 +53,9 @@ export const AnimatedCard: React.FC<IPropsAnimatedCard> = (
 ): JSX.Element => {
   const [animation] = useState(new Animated.Value(0));
   const [textInputs, setTextInputs] = useState<{ [key: string]: string }>({});
-  const handleTextInputChange = (label: string, text: string) => {
+  const handleTextInputChange = (fieldName: string, text: string) => {
     const newTextInputValues = { ...textInputs };
-    newTextInputValues[label] = text;
+    newTextInputValues[fieldName] = text;
     setTextInputs(newTextInputValues);
   };
 
@@ -90,14 +91,15 @@ export const AnimatedCard: React.FC<IPropsAnimatedCard> = (
         <View>
           {props.labelledTextInput.map((item, index) => (
             <LabelledTextInput
+              fieldName={item.fieldName}
               key={index}
               placeholder={item.placeholder}
               labelText={item.labelText}
               maxLength={item.maxLength}
               keyboardType={item.keyboardType}
-              value={textInputs[index]}
+              value={textInputs[item.fieldName]}
               onChangeText={(text) =>
-                handleTextInputChange(item.labelText, text)
+                handleTextInputChange(item.fieldName, text)
               }
               customStyles={props.labelledTextInputCustomStyles}
             />

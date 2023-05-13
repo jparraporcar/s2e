@@ -12,6 +12,7 @@ import { TextInput } from "react-native";
 import { colorsPalette } from "../const/colors";
 
 interface IPropsLabelledTextInput {
+  fieldName: string;
   labelText: string;
   placeholder: string;
   keyboardType: KeyboardTypeOptions;

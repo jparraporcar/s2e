@@ -72,17 +72,6 @@ export const BottomTabsNavigator: React.FC = (): JSX.Element => {
         })}
       />
       <BottomTabs.Screen
-        name="TimerScreen"
-        component={TimerScreen}
-        options={{
-          title: "Timer",
-          tabBarLabel: "Timer",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="timer-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <BottomTabs.Screen
         name="SettingsScreen"
         component={SettingsScreen}
         options={{

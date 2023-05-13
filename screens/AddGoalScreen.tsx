@@ -33,29 +33,34 @@ import {
   setGoalStateValidation,
   setResetIsValidationPassed,
 } from "../store/slices/goalValidationSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const labelledTextInputBook = [
   {
+    fieldName: "name",
     labelText: "Name",
     placeholder: "input Name",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
     maxLength: 30,
   },
   {
+    fieldName: "author",
     labelText: "Author",
     placeholder: "input Author",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
     maxLength: 30,
   },
   {
+    fieldName: "pages",
     labelText: "N. of Pages",
     placeholder: "input Pages",
     keyboardType: "numbers-and-punctuation" as KeyboardTypeOptions,
     maxLength: 3,
   },
   {
+    fieldName: "year",
     labelText: "Year of edition",
     placeholder: "input Year",
     keyboardType: "numbers-and-punctuation" as KeyboardTypeOptions,
@@ -65,25 +70,27 @@ const labelledTextInputBook = [
 
 const labelledTextInputCourse = [
   {
+    fieldName: "name",
     labelText: "Name",
     placeholder: "input Name",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
     maxLength: 30,
   },
   {
+    fieldName: "instructor",
     labelText: "Instructor",
     placeholder: "input Instructor",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
     maxLength: 30,
   },
   {
-    labelText: "N. of Sections",
+    fieldName: "sections",
     placeholder: "input Sections",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
     maxLength: 2,
   },
   {
-    labelText: "N. of Lectures",
+    fieldName: "lectures",
     placeholder: "input Lectures",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
     maxLength: 3,
@@ -108,16 +115,16 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
       return (resource: TBook) => {
         try {
           const resBook = bookSchema.parse({
-            Name: resource.Name,
-            Author: resource.Author,
-            Pages:
-              Number(resource.Pages).toString() === "NaN"
+            name: resource.name,
+            author: resource.author,
+            pages:
+              Number(resource.pages).toString() === "NaN"
                 ? 0
-                : Number(resource.Pages),
-            Year:
-              Number(resource.Year).toString() === "NaN"
+                : Number(resource.pages),
+            year:
+              Number(resource.year).toString() === "NaN"
                 ? 0
-                : Number(resource.Year),
+                : Number(resource.year),
           });
           dispatch(setBook(resource));
           setModalVisible(false);
@@ -140,16 +147,16 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
       return (resource: TCourse) => {
         try {
           const resCourse = courseSchema.parse({
-            Name: resource.Name,
-            Instructor: resource.Instructor,
+            Name: resource.name,
+            Instructor: resource.instructor,
             Sections:
-              Number(resource.Sections).toString() === "NaN"
+              Number(resource.sections).toString() === "NaN"
                 ? 0
-                : Number(resource.Sections),
+                : Number(resource.sections),
             Lectures:
-              Number(resource.Lectures).toString() === "NaN"
+              Number(resource.lectures).toString() === "NaN"
                 ? 0
-                : Number(resource.Lectures),
+                : Number(resource.lectures),
           });
           dispatch(setCourse(resource as TCourse));
           setModalVisible(false);
@@ -178,7 +185,6 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
   };
 
   const handleAddGoalToList = () => {
-    console.log("handleAddGoalToList");
     dispatch(setGoalStateValidation(goalState));
     setModalVisibleOuter(true);
   };
@@ -196,9 +202,29 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
           visibilityTime: 2000,
           bottomOffset: 20,
         });
-        dispatch(setResetGoalInput());
-        dispatch(setAddGoal(goalState));
-        setTimeout(() => navigation.goBack(), 2000);
+        dispatch(
+          setAddGoal({
+            id: Math.random(),
+            goalData: goalState,
+            percentatges: {
+              today: 0,
+              week: 0,
+              month: 0,
+            },
+            currentResource: "Course",
+            totalTime: 0,
+            sesionTime: 0,
+          })
+        );
+        setTimeout(() => {
+          dispatch(setResetGoalInput());
+          navigation.goBack();
+        }, 2000);
+        setTimeout(() => {
+          AsyncStorage.getItem("persist:goals").then((value) =>
+            console.log("AynscStorage value", value)
+          );
+        }, 5000);
       } else {
         Object.keys(goalValidationState.result).map((key) => {
           if (
@@ -227,6 +253,8 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
       dispatch(setResetIsValidationPassed());
     }
   }, [goalValidationState]);
+
+  console.log(goalState);
 
   return (
     <>
@@ -278,6 +306,7 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
       <View style={styles.containerMain}>
         <View style={styles.containerLabelledTextInput}>
           <LabelledTextInput
+            fieldName="name"
             labelText="Name"
             placeholder="input name"
             keyboardType="ascii-capable"

@@ -1,25 +1,26 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { useAppSelector } from "../store/hooks";
-import { IGoalsListItem } from "../store/slices/goalsListSlice";
+import { GoalsItem } from "../store/slices/goalsListSlice";
 import { GoalListItem } from "../components/GoalListItem";
 
 export const GoalsScreen: React.FC = (): JSX.Element => {
   const goalsListState = useAppSelector((state) => state.goalsList);
   return (
-    <View style={styles.containerMain}>
-      {goalsListState.map((goal: IGoalsListItem) => (
-        <Text key={goal.id}>{goal.id}</Text>
+    <ScrollView contentContainerStyle={styles.containerMain}>
+      {goalsListState.goals.map((goal: GoalsItem) => (
+        <GoalListItem
+          key={goal.id}
+          goalId={goal.id}
+          todayPercentatge={goal.percentatges.today}
+          weekPercentatge={goal.percentatges.week}
+          overallPercentatge={goal.percentatges.month}
+          goalName={goal.goalData.name}
+          resourceType={goal.currentResource}
+          goalData={goal.goalData}
+        />
       ))}
-      <GoalListItem
-        todayPercentatge={80}
-        weekPercentatge={60}
-        overallPercentatge={85}
-        goalName="Mathematics"
-        resourceName="Great Book of maths"
-        resourceType="Book"
-      />
-    </View>
+    </ScrollView>
   );
 };
 

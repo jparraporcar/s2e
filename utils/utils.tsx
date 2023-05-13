@@ -1,3 +1,7 @@
+import { merge } from "lodash";
+import { RootState } from "../store/store";
+import { GoalsListState } from "../store/slices/goalsListSlice";
+
 //A period is valid when dateA is greater or equal than DateB
 export const isPeriodValidPartial = (dateA: Date, dateB: Date): boolean => {
   // Extract the year, month, and day parts from both dates
@@ -15,11 +19,9 @@ export const isPeriodValidPartial = (dateA: Date, dateB: Date): boolean => {
     yearA > yearB ||
     (yearA === yearB && monthA > monthB) ||
     (yearA === yearB && monthA === monthB && dayA > dayB);
-  console.log(isGreater, "isGreater");
   // Condition2: dateA === dateB
 
   const isEqual = yearA === yearB && monthA === monthB && dayA === dayB;
-  console.log(isEqual, "isEqual");
 
   return isGreater || isEqual;
 };
@@ -48,18 +50,15 @@ export const isPeriodValidTotal = (
     dateToday
   );
 
-  console.log(
-    isValid.isInitialDateGreaterOrEqualThanToday,
-    "isValid.isInitialDateGreaterOrEqualThanToday"
-  );
-
-  console.log(
-    isValid.isFinalDateGreaterOrEqualThanInitial,
-    "isValid.isFinalDateGreaterOrEqualThanInitial"
-  );
-
   return (
     isValid.isInitialDateGreaterOrEqualThanToday &&
     isValid.isFinalDateGreaterOrEqualThanInitial
   );
+};
+
+export const deepMergeStateReconciler = (
+  inboundState: GoalsListState,
+  originalState: GoalsListState
+) => {
+  return merge({}, originalState, inboundState);
 };
