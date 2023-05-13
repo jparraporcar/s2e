@@ -3,7 +3,11 @@ import { View, Text, StyleSheet } from "react-native";
 import Timer from "../components/Timer";
 import IconButton from "../components/IconButton";
 import { useAppDispatch } from "../store/hooks";
-import { startTimer, stopTimer } from "../store/slices/timerSlice";
+import {
+  offsetTimerInitialTime,
+  startTimer,
+  stopTimer,
+} from "../store/slices/timerSlice";
 import { useAppSelector } from "../store/hooks";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../App";
@@ -16,28 +20,33 @@ type PropsTimerScreen = {
   route: TimerScreenRouteProp;
 };
 export const TimerScreen: React.FC<PropsTimerScreen> = (props): JSX.Element => {
+  const goalId = props.route.params.goalId;
   const dispatch = useAppDispatch();
-  const goalListState = useAppSelector((state) => state.goalsList);
-  const goalTime = goalListState.goals.find(
-    (goalItem) => goalItem.id === props.route.params.goalId
+  const goalsListState = useAppSelector((state) => state.goalsList);
+  const sesionTimeGoalItemState = goalsListState.goals.find(
+    (goalItem) => goalItem.id === goalId
   )!.sesionTime;
   const timerState = useAppSelector((state) => state.timer);
 
   useEffect(() => {
-    if (timerState.time !== 0) {
-      dispatch(
-        updateGoalProgress({
-          id: props.route.params.goalId,
-          sesionTime: timerState.time,
-        })
-      );
+    if (goalsListState._persist.rehydrated === true) {
+      dispatch(offsetTimerInitialTime(sesionTimeGoalItemState));
     }
+  }, []);
+
+  useEffect(() => {
+    dispatch(
+      updateGoalProgress({
+        id: goalId,
+        sesionTime: timerState.time,
+      })
+    );
   }, [timerState.time]);
 
   return (
     <View style={styles.containerMain}>
       <View>
-        <Timer time={goalTime} />
+        <Timer time={sesionTimeGoalItemState} />
       </View>
       <View style={styles.containerButtons}>
         <View>
