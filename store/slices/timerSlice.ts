@@ -1,36 +1,75 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { persistReducer } from "redux-persist";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { deepMergeStateReconcilerTimers } from "../../utils/utils";
 
 export interface TimerState {
+  goalId: number;
   time: number;
   isRunning: boolean;
 }
 
-export const initialState: TimerState = {
-  time: 0,
-  isRunning: false,
+export interface TimersState {
+  timers: TimerState[];
+}
+
+const initialState = {
+  timers: [] as TimerState[],
 };
 
-export const timerSlice = createSlice({
-  name: "goal",
+const persistConfig = {
+  key: "timerList",
+  storage: AsyncStorage,
+  whitelist: ["timers"],
+  stateReconciler: (inboundState: TimersState, originalState: TimersState) => {
+    console.log("State reconciliation timers", { inboundState, originalState });
+    return deepMergeStateReconcilerTimers(inboundState, originalState);
+  },
+};
+
+export const timerListSlice = createSlice({
+  name: "timerList",
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    startTimer: (state) => {
-      state.isRunning = true;
+    initializeTimer: (state, action: PayloadAction<{ goalId: number }>) => {
+      state.timers.push({
+        goalId: action.payload.goalId,
+        time: 0,
+        isRunning: false,
+      });
     },
-    stopTimer: (state) => {
-      state.isRunning = false;
+    startTimer: (state, action: PayloadAction<{ goalId: number }>) => {
+      const goalTimerIndex = state.timers.findIndex(
+        (timer) => timer.goalId === action.payload.goalId
+      );
+      state.timers[goalTimerIndex].isRunning = true;
     },
-    tick: (state) => {
-      state.time += 1;
+    stopTimer: (state, action: PayloadAction<{ goalId: number }>) => {
+      const goalTimerIndex = state.timers.findIndex(
+        (timer) => timer.goalId === action.payload.goalId
+      );
+      state.timers[goalTimerIndex].isRunning = false;
     },
-    offsetTimerInitialTime: (state, action: PayloadAction<number>) => {
-      state.time = action.payload;
+    tick: (state, action: PayloadAction<{ goalId: number }>) => {
+      const goalTimerIndex = state.timers.findIndex(
+        (timer) => timer.goalId === action.payload.goalId
+      );
+      state.timers[goalTimerIndex].time += 1;
+    },
+    resetTimer: (state, action: PayloadAction<{ goalId: number }>) => {
+      const goalTimerIndex = state.timers.findIndex(
+        (timer) => timer.goalId === action.payload.goalId
+      );
+      state.timers[goalTimerIndex].time = 0;
     },
   },
 });
 
-export const { startTimer, stopTimer, tick, offsetTimerInitialTime } =
-  timerSlice.actions;
+export const { startTimer, stopTimer, tick, resetTimer, initializeTimer } =
+  timerListSlice.actions;
 
-export default timerSlice.reducer;
+export const persistedTimerListReducerSlice = persistReducer(
+  persistConfig,
+  timerListSlice.reducer
+);

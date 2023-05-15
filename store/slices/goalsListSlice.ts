@@ -1,10 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IGoalState } from "./goalSlice";
-import { PersistConfig, persistReducer } from "redux-persist";
+import { persistReducer } from "redux-persist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { RootState } from "../store";
-import { GoalListItem } from "../../components/GoalListItem";
-import { deepMergeStateReconciler } from "../../utils/utils";
+import { deepMergeStateReconcilerGoals } from "../../utils/utils";
+
+export type SesionTiming = {
+  sesionDayString: string | undefined;
+  elapsedTimeSec: number;
+  startTimeSec: number;
+};
 
 export type GoalsItem = {
   id: number;
@@ -13,10 +17,11 @@ export type GoalsItem = {
     today: number;
     week: number;
     month: number;
+    total: number;
   };
   currentResource: "Book" | "Course";
   totalTime: number;
-  sesionTime: number;
+  sesions: SesionTiming[];
 };
 
 export interface GoalsListState {
@@ -35,8 +40,8 @@ const persistConfig = {
     inboundState: GoalsListState,
     originalState: GoalsListState
   ) => {
-    console.log("State reconciliation", { inboundState, originalState });
-    return deepMergeStateReconciler(inboundState, originalState);
+    console.log("State reconciliation goals", { inboundState, originalState });
+    return deepMergeStateReconcilerGoals(inboundState, originalState);
   },
 };
 
@@ -51,27 +56,58 @@ export const goalsListSlice = createSlice({
     setDeleteGoal: (state, action: PayloadAction<number>) => {
       state.goals = state.goals.filter((goal) => goal.id !== action.payload);
     },
-    updateGoalProgress: (
+    // updateGoalProgress: (
+    //   state,
+    //   action: PayloadAction<{
+    //     id: number;
+    //     sesionTiming: SesionTiming;
+    //   }>
+    // ) => {
+    //   const todayString = createTodayString();
+    //   const foundGoal = state.goals.find(
+    //     (goal) => goal.id === action.payload.id
+    //   ) as GoalsItem;
+    //   const foundGoalIndex = state.goals.findIndex(
+    //     (goal) => goal.id === action.payload.id
+    //   );
+    //   const foundSesion = foundGoal.sesions.find(
+    //     (sesion) => sesion.currentDate === todayString
+    //   )
+
+    //   const foundSesionIndex = foundGoal.sesions.findIndex(
+    //     (sesion) => sesion.currentDate === todayString
+    //   );
+
+    //   const newState = state.goals.filter(
+    //     (goal) => goal.id !== action.payload.id
+    //   );
+    //   // foundGoal.percentatges = action.payload.percentatges;
+    //   foundGoal.totalTime += action.payload.sesionTime;
+    //   newState.splice(foundGoalIndex, 0, foundGoal);
+    //   state.goals = newState;
+    // },
+    initializeSesion: (
       state,
       action: PayloadAction<{
-        id: number;
-        sesionTime: number;
+        goalIndex: number;
+        sesionTiming: SesionTiming;
       }>
     ) => {
-      const foundGoal = state.goals.find(
-        (goal) => goal.id === action.payload.id
-      ) as GoalsItem;
-      const foundGoalIndex = state.goals.findIndex(
-        (goal) => goal.id === action.payload.id
+      state.goals[action.payload.goalIndex].sesions.push(
+        action.payload.sesionTiming
       );
-      const newState = state.goals.filter(
-        (goal) => goal.id !== action.payload.id
-      );
-      // foundGoal.percentatges = action.payload.percentatges;
-      foundGoal.totalTime += action.payload.sesionTime;
-      foundGoal.sesionTime = action.payload.sesionTime;
-      newState.splice(foundGoalIndex, 0, foundGoal);
-      state.goals = newState;
+    },
+    updateSesion: (
+      state,
+      action: PayloadAction<{
+        sesionIndex: number;
+        goalIndex: number;
+        sesionTiming: SesionTiming;
+      }>
+    ) => {
+      state.goals[action.payload.goalIndex].sesions[
+        action.payload.sesionIndex
+      ].elapsedTimeSec = action.payload.sesionTiming.elapsedTimeSec;
     },
     setCurrentResource: (
       state,
@@ -95,9 +131,11 @@ export const goalsListSlice = createSlice({
 
 export const {
   setAddGoal,
-  updateGoalProgress,
+  // updateGoalProgress,
   setDeleteGoal,
   setCurrentResource,
+  initializeSesion,
+  updateSesion,
 } = goalsListSlice.actions;
 
 export const persistedGoalsListReducerSlice = persistReducer(

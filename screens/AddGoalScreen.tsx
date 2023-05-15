@@ -210,10 +210,11 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
               today: 0,
               week: 0,
               month: 0,
+              total: 0,
             },
             currentResource: "Course",
             totalTime: 0,
-            sesionTime: 0,
+            sesions: [],
           })
         );
         setTimeout(() => {

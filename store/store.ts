@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import goalSlice from "./slices/goalSlice";
 import { persistedGoalsListReducerSlice } from "./slices/goalsListSlice";
 import goalValidationSlice from "./slices/goalValidationSlice";
-import timerSlice from "./slices/timerSlice";
+import { persistedTimerListReducerSlice } from "./slices/timerSlice";
 import timerMiddleware from "./slices/middlewares/timerMiddleware";
 import {
   FLUSH,
@@ -18,7 +18,7 @@ import reduxFlipper from "redux-flipper";
 export const store = configureStore({
   devTools: true,
   reducer: {
-    timer: timerSlice,
+    timerList: persistedTimerListReducerSlice,
     goal: goalSlice,
     goalsList: persistedGoalsListReducerSlice,
     goalValidation: goalValidationSlice,

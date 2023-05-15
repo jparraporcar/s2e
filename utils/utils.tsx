@@ -1,6 +1,7 @@
 import { merge } from "lodash";
 import { RootState } from "../store/store";
 import { GoalsListState } from "../store/slices/goalsListSlice";
+import { TimersState } from "../store/slices/timerSlice";
 
 //A period is valid when dateA is greater or equal than DateB
 export const isPeriodValidPartial = (dateA: Date, dateB: Date): boolean => {
@@ -56,9 +57,48 @@ export const isPeriodValidTotal = (
   );
 };
 
-export const deepMergeStateReconciler = (
+export const deepMergeStateReconcilerGoals = (
   inboundState: GoalsListState,
   originalState: GoalsListState
 ) => {
   return merge({}, originalState, inboundState);
+};
+
+export const deepMergeStateReconcilerTimers = (
+  inboundState: TimersState,
+  originalState: TimersState
+) => {
+  return merge({}, originalState, inboundState);
+};
+
+export const calculatePercentatges = (
+  time: number,
+  periodInitial: string,
+  periodFinal: string
+) => {
+  const regEx = /^\d{4}-\d{2}-\d{2}$/;
+  if (!regEx.test(periodInitial) || !regEx.test(periodFinal)) {
+    throw new Error("input periods must be of the format YYYY-MM-HH");
+  }
+  const dateA = new Date(periodInitial);
+  const dateB = new Date(periodFinal);
+
+  const differenceInSeconds =
+    Math.abs(dateA.getTime() - dateB.getTime()) / 1000;
+
+  return { todayPercentatge: 4 };
+};
+
+export const evalMeasureToday = (startTimeSeconds: number) => {
+  const incrementSeconds = startTimeSeconds - new Date().getDate() / 1000;
+  const isToday = incrementSeconds < 24 * 3600;
+  const todaySecondsExceeded =
+    incrementSeconds - 24 * 3600 > 0 ? incrementSeconds - 24 * 3600 : 0;
+
+  return { isToday: isToday, todaySecondsExcedeed: todaySecondsExceeded };
+};
+
+export const createSesionDayString = () => {
+  const todayString = new Date().toISOString().substring(0, 10);
+  return todayString;
 };
