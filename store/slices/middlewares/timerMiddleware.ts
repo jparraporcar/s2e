@@ -30,6 +30,14 @@ const timerMiddleware: Middleware =
           (interval) => interval.goalId === action.payload.goalId
         );
       }
+      intervals.forEach((interval) => {
+        if (
+          interval.goalId !== action.payload.goalId &&
+          interval.intervalId !== null
+        ) {
+          clearInterval(interval.intervalId);
+        }
+      });
       if (intervals[currentIntervalIndex].intervalId === null) {
         intervals[currentIntervalIndex].intervalId = setInterval(() => {
           store.dispatch(tick({ goalId: action.payload.goalId }));

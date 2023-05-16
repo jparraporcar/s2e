@@ -5,6 +5,7 @@ import IconButton from "../components/IconButton";
 import { useAppDispatch } from "../store/hooks";
 import {
   initializeTimer,
+  resetTimer,
   startTimer,
   stopTimer,
 } from "../store/slices/timerSlice";
@@ -25,7 +26,8 @@ export const TimerScreen: React.FC<PropsTimerScreen> = (props): JSX.Element => {
   const dispatch = useAppDispatch();
   const goalsListState = useAppSelector((state) => state.goalsList);
   // every time the screen is loaded, a string with the actual day is created
-  const sesionDayString = createSesionDayString();
+  const sesionDayString = "2023-05-19";
+  // const sesionDayString = createSesionDayString();
   // in the current loaded goal look for an already existing sesion of the actual day if it exists
   const sesion = goalsListState.goals
     .find((goal) => goal.id === goalId)!
@@ -46,34 +48,41 @@ export const TimerScreen: React.FC<PropsTimerScreen> = (props): JSX.Element => {
   // this effect updates the timerState and triggers the useEffect2
   // useEffect1
   useEffect(() => {
-    if (timerGoalIndex === -1) {
-      // timer initialized for the loaded goal. This happens only first time the user clicks in the goal
-      // and loads this screen. After the first time this condition is not fullfilled since
-      // timerGoalIndex !== -1
+    // if there is no sesion and there is not timer it means that it is the first time
+    // that the user navigates to the TimerScreen, therefore, sesion and timer both have
+    // to be initialized, and that means timer is set to 0.
+    if (sesionIndex === -1 && timerGoalIndex === -1) {
       dispatch(initializeTimer({ goalId: goalId }));
-    }
-  }, []);
-
-  // initialize sesion in case there is no sesion existing sesion for the current day
-  // it is triggered after the timerState has been properly initialized (if necessary)
-  useEffect(() => {
-    if (sesionIndex === -1 && timerGoalIndex !== -1) {
       dispatch(
         initializeSesion({
           goalIndex: goalIndex,
           sesionTiming: {
             sesionDayString: sesionDayString,
-            elapsedTimeSec: timerState.timers[timerGoalIndex].time,
+            elapsedTimeSec: 0,
+            startTimeSec: Math.floor(Date.now() / 1000),
+          },
+        })
+      );
+      // this condition is fullfilled when there is a change in the day while the user being outside the TimerScreen
+      // then when the user navigates to the TimerScreen throught the goal, there is no sesion for
+      // the new day but there is a timer from the previous day. In that case the timer has to be set to 0,
+      // and the sesion initialiazed
+    } else if (sesionIndex === -1 && timerGoalIndex !== -1) {
+      dispatch(resetTimer({ goalId: goalId }));
+      dispatch(
+        initializeSesion({
+          goalIndex: goalIndex,
+          sesionTiming: {
+            sesionDayString: sesionDayString,
+            elapsedTimeSec: 0,
             startTimeSec: Math.floor(Date.now() / 1000),
           },
         })
       );
     }
-    // this condition is fullfilled when the timer has not yet been initialized
-    // in that case the sesion cannot be initialized
-    if (sesionIndex === -1 && timerGoalIndex === -1) {
-      return;
-    }
+  }, []);
+
+  useEffect(() => {
     // this condition is fullfilled when the sesion has been already initialized which means that
     // the timer was also initialized beforehand. Plus the start button has been clicked which turns
     // the isRunning state to true. In this case the sesion must be updated every time the goalID
@@ -81,16 +90,41 @@ export const TimerScreen: React.FC<PropsTimerScreen> = (props): JSX.Element => {
     if (
       sesionIndex !== -1 &&
       timerGoalIndex !== -1 &&
-      timerState.timers[timerGoalIndex].isRunning === true
+      timerState.timers[timerGoalIndex].isRunning === true &&
+      goalsListState.goals[goalIndex].sesions[sesionIndex].sesionDayString ===
+        sesionDayString
     ) {
       dispatch(
         updateSesion({
           sesionIndex: sesionIndex,
           goalIndex: goalIndex,
           sesionTiming: {
-            sesionDayString: sesion[sesionIndex].sesionDayString,
+            sesionDayString:
+              goalsListState.goals[goalIndex].sesions[sesionIndex]
+                .sesionDayString,
             elapsedTimeSec: timerState.timers[timerGoalIndex].time,
-            startTimeSec: sesion[sesionIndex].startTimeSec,
+            startTimeSec:
+              goalsListState.goals[goalIndex].sesions[sesionIndex].startTimeSec,
+          },
+        })
+      );
+      // while measuring current goal, day has changed and therefore no sesion existing for the new
+      // day so, the sesion of the new day has to be initialized and the timer set to 0
+    } else if (
+      sesionIndex !== -1 &&
+      timerGoalIndex !== -1 &&
+      timerState.timers[timerGoalIndex].isRunning === true &&
+      goalsListState.goals[goalIndex].sesions[sesionIndex].sesionDayString !==
+        sesionDayString // <-- day change while measuring
+    ) {
+      dispatch(resetTimer({ goalId: goalId }));
+      dispatch(
+        initializeSesion({
+          goalIndex: goalIndex,
+          sesionTiming: {
+            sesionDayString: sesionDayString,
+            elapsedTimeSec: 0,
+            startTimeSec: Math.floor(Date.now() / 1000),
           },
         })
       );
