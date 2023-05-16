@@ -85,12 +85,14 @@ const labelledTextInputCourse = [
   },
   {
     fieldName: "sections",
+    labelText: "Sections",
     placeholder: "input Sections",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
     maxLength: 2,
   },
   {
     fieldName: "lectures",
+    labelText: "Lectures",
     placeholder: "input Lectures",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
     maxLength: 3,
