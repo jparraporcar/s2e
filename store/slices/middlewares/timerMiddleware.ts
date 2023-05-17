@@ -22,7 +22,6 @@ const timerMiddleware: Middleware =
     if (action.type === startTimer.type) {
       // find the index of the interval corresponding to the current measuring goal. If there is still not measuring goal
       // then currentIntervalIndex will be -1
-      // it means it is not
       currentIntervalIndex = intervals.findIndex(
         (interval) => interval.goalId === action.payload.goalId
       );
@@ -34,47 +33,58 @@ const timerMiddleware: Middleware =
           (interval) => interval.goalId === action.payload.goalId
         );
       }
+      // whenever startTimer is executed each goal that is different to the actual meauring goal has to be cleared
+      // so that there cannot be 2 goals measuring at the same time. All goal timers intervalId's that are not
+      // measuring the actual goal are not null so, they must be cleared
       intervals.forEach((interval) => {
         if (
           interval.goalId !== action.payload.goalId &&
+          interval.goalId !== null &&
           interval.intervalId !== null
         ) {
+          store.dispatch(stopTimer({ goalId: interval.goalId }));
           clearInterval(interval.intervalId);
         }
       });
+      // start the timer for the current goal timer
       if (intervals[currentIntervalIndex].intervalId === null) {
         intervals[currentIntervalIndex].intervalId = setInterval(() => {
           store.dispatch(tick({ goalId: action.payload.goalId }));
         }, 1000);
       }
+      // if stopTimer is executedm the current measuring goal has to be stopped and set to null
     } else if (action.type === stopTimer.type) {
       clearInterval(intervals[currentIntervalIndex].intervalId as number);
       intervals[currentIntervalIndex].intervalId = null;
     } else if (action.type === tick.type) {
+      // current goal being measured
       const goalId = action.payload.goalId;
+      // goalsList state
       const goalsListState = state.goalsList;
-      // every time the screen is loaded, a string with the actual day is created
+      // day string to check when there is a change in measuring day
+      // const sesionDayString = "2023-05-18";
       const sesionDayString = createSesionDayString();
-      // const sesionDayString = createSesionDayString();
-      // in the current loaded goal look for an already existing sesion of the actual day if it exists
+      // current sesion being measured for the current goal and for the current day string
       const sesion = goalsListState.goals
         .find((goal) => goal.id === goalId)!
         .sesions.filter((sesion) => sesion.sesionDayString === sesionDayString);
-      // look for the index of the sesion in the sesions array, if existing otherwise = -1
+      // current sesion (index) being measured for the current goal and for the current day string
       const sesionIndex = goalsListState.goals
         .find((goal) => goal.id === goalId)!
         .sesions.findIndex(
           (sesion) => sesion.sesionDayString === sesionDayString
         );
-      // look for the goal index (it will always be defined due to navigating to this screen with a goalId)
+      // current goal index for the goal being measured
       const goalIndex = goalsListState.goals.findIndex(
         (goal) => goal.id === goalId
       );
+      // current timerState
       const timerState = state.timerList;
+      // current timer index for the current goal being measured
       const timerGoalIndex = state.timerList.timers.findIndex(
         (timer) => timer.goalId === goalId
       );
-
+      // update the sesion while the tick action is being dispathed by the interval. this
       if (
         sesionIndex !== -1 &&
         timerGoalIndex !== -1 &&
@@ -100,11 +110,10 @@ const timerMiddleware: Middleware =
         // while measuring current goal, day has changed and therefore no sesion existing for the new
         // day so, the sesion of the new day has to be initialized and the timer set to 0
       } else if (
-        sesionIndex !== -1 &&
-        timerGoalIndex !== -1 &&
-        timerState.timers[timerGoalIndex].isRunning === true &&
-        goalsListState.goals[goalIndex].sesions[sesionIndex].sesionDayString !==
-          sesionDayString // <-- day change while measuring
+        sesionIndex === -1 && // due to change in the day a sesion is no longer found
+        timerGoalIndex !== -1 && // the timer is still ticking and needs to be reset to 0 ( no need to stop it since
+        // it still need to keep counting for the new day)
+        timerState.timers[timerGoalIndex].isRunning === true
       ) {
         store.dispatch(resetTimer({ goalId: goalId }));
         store.dispatch(

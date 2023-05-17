@@ -77,7 +77,6 @@ export const AnimatedCard: React.FC<IPropsAnimatedCard> = (
       outputRange: [0, 1],
     }),
   };
-
   return (
     <Animated.View style={animatedViewStyle}>
       <Card

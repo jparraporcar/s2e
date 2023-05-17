@@ -26,8 +26,8 @@ export const TimerScreen: React.FC<PropsTimerScreen> = (props): JSX.Element => {
   const dispatch = useAppDispatch();
   const goalsListState = useAppSelector((state) => state.goalsList);
   // every time the screen is loaded, a string with the actual day is created
+  // const sesionDayString = "2023-05-18";
   const sesionDayString = createSesionDayString();
-  // const sesionDayString = createSesionDayString();
   // in the current loaded goal look for an already existing sesion of the actual day if it exists
   const sesion = goalsListState.goals
     .find((goal) => goal.id === goalId)!

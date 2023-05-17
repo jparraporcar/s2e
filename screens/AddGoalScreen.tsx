@@ -149,13 +149,13 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
       return (resource: TCourse) => {
         try {
           const resCourse = courseSchema.parse({
-            Name: resource.name,
-            Instructor: resource.instructor,
-            Sections:
+            name: resource.name,
+            instructor: resource.instructor,
+            sections:
               Number(resource.sections).toString() === "NaN"
                 ? 0
                 : Number(resource.sections),
-            Lectures:
+            lectures:
               Number(resource.lectures).toString() === "NaN"
                 ? 0
                 : Number(resource.lectures),
