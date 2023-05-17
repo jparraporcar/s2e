@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Timer from "../components/Timer";
 import IconButton from "../components/IconButton";
@@ -12,7 +12,7 @@ import {
 import { useAppSelector } from "../store/hooks";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../App";
-import { RouteProp } from "@react-navigation/native";
+import { RouteProp, useNavigation } from "@react-navigation/native";
 import { initializeSesion, updateSesion } from "../store/slices/goalsListSlice";
 import { createSesionDayString } from "../utils/utils";
 
@@ -22,6 +22,7 @@ type PropsTimerScreen = {
   route: TimerScreenRouteProp;
 };
 export const TimerScreen: React.FC<PropsTimerScreen> = (props): JSX.Element => {
+  const navigation = useNavigation();
   const goalId = props.route.params.goalId;
   const dispatch = useAppDispatch();
   const goalsListState = useAppSelector((state) => state.goalsList);
@@ -44,6 +45,22 @@ export const TimerScreen: React.FC<PropsTimerScreen> = (props): JSX.Element => {
   const timerGoalIndex = useAppSelector(
     (state) => state.timerList.timers
   ).findIndex((timer) => timer.goalId === goalId);
+
+  const onBackPress = useCallback(() => {
+    // Perform your action here
+    dispatch(stopTimer({ goalId: goalId }));
+    // If you return false here, the default back button action will be suppressed.
+    return true;
+  }, []);
+
+  useEffect(() => {
+    navigation.addListener("beforeRemove", onBackPress);
+
+    return () => {
+      navigation.removeListener("beforeRemove", onBackPress);
+    };
+  }, [navigation, onBackPress]);
+
   // initialize timer if there is not timer existing for the current goal (1 timer/goal)
   // this effect updates the timerState and triggers the useEffect2
   // useEffect1

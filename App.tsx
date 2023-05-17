@@ -50,7 +50,10 @@ const App: React.FC = (): JSX.Element => {
               options={{
                 title: "Timer",
                 ...TransitionPresets.ModalSlideFromBottomIOS,
+                headerBackTitleStyle: { paddingLeft: 10 },
                 headerTintColor: "black",
+                headerBackTitle: "Finish",
+                headerBackImage: () => null,
               }}
             />
           </Stack.Navigator>
