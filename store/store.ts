@@ -14,6 +14,7 @@ import {
   persistStore,
 } from "redux-persist";
 import reduxFlipper from "redux-flipper";
+import { indexCourseMiddleWare } from "./slices/middlewares/indexCourseMiddleware";
 
 export const store = configureStore({
   devTools: true,
@@ -30,7 +31,8 @@ export const store = configureStore({
       },
     })
       .concat(timerMiddleware)
-      .concat(reduxFlipper()),
+      .concat(reduxFlipper())
+      .concat(indexCourseMiddleWare),
 });
 
 console.log("Store created");

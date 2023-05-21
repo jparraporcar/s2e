@@ -3,6 +3,7 @@ import { IGoalState } from "./goalSlice";
 import { persistReducer } from "redux-persist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { deepMergeStateReconcilerGoals } from "../../utils/utils";
+import { fetchCourseIndexOfGoal } from "./actions";
 
 export type SesionTiming = {
   sesionDayString: string | undefined;
@@ -11,7 +12,7 @@ export type SesionTiming = {
 };
 
 export type GoalsItem = {
-  id: number;
+  goalId: number;
   goalData: IGoalState;
   percentatges: {
     today: number;
@@ -22,6 +23,8 @@ export type GoalsItem = {
   currentResource: "Book" | "Course";
   totalTime: number;
   sesions: SesionTiming[];
+  indexCourse: { loading: boolean; value: string };
+  indexBook: { loading: boolean; value: string };
 };
 
 export interface GoalsListState {
@@ -54,7 +57,9 @@ export const goalsListSlice = createSlice({
       state.goals.push(action.payload);
     },
     setDeleteGoal: (state, action: PayloadAction<number>) => {
-      state.goals = state.goals.filter((goal) => goal.id !== action.payload);
+      state.goals = state.goals.filter(
+        (goal) => goal.goalId !== action.payload
+      );
     },
     // updateGoalProgress: (
     //   state,
@@ -114,18 +119,31 @@ export const goalsListSlice = createSlice({
       action: PayloadAction<{ currentResource: "Book" | "Course"; id: number }>
     ) => {
       const foundGoal = state.goals.find(
-        (goal) => goal.id === action.payload.id
+        (goal) => goal.goalId === action.payload.id
       ) as GoalsItem;
       const foundGoalIndex = state.goals.findIndex(
-        (goal) => goal.id === action.payload.id
+        (goal) => goal.goalId === action.payload.id
       );
       const newState = state.goals.filter(
-        (goal) => goal.id !== action.payload.id
+        (goal) => goal.goalId !== action.payload.id
       );
       foundGoal.currentResource = action.payload.currentResource;
       newState.splice(foundGoalIndex, 0, foundGoal);
       state.goals = newState;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchCourseIndexOfGoal.fulfilled, (state, action) => {
+      state.goals[state.goals.length - 1].indexCourse.loading = true;
+      state.goals[state.goals.length - 1].indexCourse.value =
+        action.payload.content;
+      state.goals[state.goals.length - 1].indexCourse.loading = false;
+    });
+    builder.addCase(fetchCourseIndexOfGoal.rejected, (state, action) => {
+      state.goals[state.goals.length - 1].indexCourse.loading = true;
+      state.goals[state.goals.length - 1].indexCourse.value = "error";
+      state.goals[state.goals.length - 1].indexCourse.loading = false;
+    });
   },
 });
 

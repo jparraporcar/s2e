@@ -15,6 +15,7 @@ import { RootStackParamList } from "../App";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { initializeSesion, updateSesion } from "../store/slices/goalsListSlice";
 import { createSesionDayString } from "../utils/utils";
+import DateComponent from "../components/DateComponent";
 
 type TimerScreenRouteProp = RouteProp<RootStackParamList, "TimerScreen">;
 
@@ -31,15 +32,15 @@ export const TimerScreen: React.FC<PropsTimerScreen> = (props): JSX.Element => {
   const sesionDayString = createSesionDayString();
   // in the current loaded goal look for an already existing sesion of the actual day if it exists
   const sesion = goalsListState.goals
-    .find((goal) => goal.id === goalId)!
+    .find((goal) => goal.goalId === goalId)!
     .sesions.filter((sesion) => sesion.sesionDayString === sesionDayString);
   // look for the index of the sesion in the sesions array, if existing otherwise = -1
   const sesionIndex = goalsListState.goals
-    .find((goal) => goal.id === goalId)!
+    .find((goal) => goal.goalId === goalId)!
     .sesions.findIndex((sesion) => sesion.sesionDayString === sesionDayString);
   // look for the goal index (it will always be defined due to navigating to this screen with a goalId)
   const goalIndex = goalsListState.goals.findIndex(
-    (goal) => goal.id === goalId
+    (goal) => goal.goalId === goalId
   );
   const timerState = useAppSelector((state) => state.timerList);
   const timerGoalIndex = useAppSelector(
@@ -48,7 +49,15 @@ export const TimerScreen: React.FC<PropsTimerScreen> = (props): JSX.Element => {
 
   const onBackPress = useCallback(() => {
     // Perform your action here
-    dispatch(stopTimer({ goalId: goalId }));
+    const actualTimer = timerState.timers.filter(
+      (timer) => timer.goalId === goalId
+    );
+    console.log(actualTimer, "actualTimer");
+
+    if (actualTimer.length > 0 && actualTimer[0].isRunning === false) {
+      dispatch(stopTimer({ goalId: goalId }));
+    }
+
     // If you return false here, the default back button action will be suppressed.
     return true;
   }, []);
@@ -101,6 +110,9 @@ export const TimerScreen: React.FC<PropsTimerScreen> = (props): JSX.Element => {
 
   return (
     <View style={styles.containerMain}>
+      <View>
+        <DateComponent date={sesionDayString} />
+      </View>
       <View>
         <Timer
           time={

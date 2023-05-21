@@ -43,14 +43,14 @@ const labelledTextInputBook = [
     labelText: "Name",
     placeholder: "input Name",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
-    maxLength: 30,
+    maxLength: 40,
   },
   {
     fieldName: "author",
     labelText: "Author",
     placeholder: "input Author",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
-    maxLength: 30,
+    maxLength: 40,
   },
   {
     fieldName: "pages",
@@ -74,14 +74,14 @@ const labelledTextInputCourse = [
     labelText: "Name",
     placeholder: "input Name",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
-    maxLength: 30,
+    maxLength: 40,
   },
   {
     fieldName: "instructor",
     labelText: "Instructor",
     placeholder: "input Instructor",
     keyboardType: "ascii-capable" as KeyboardTypeOptions,
-    maxLength: 30,
+    maxLength: 40,
   },
   {
     fieldName: "sections",
@@ -206,7 +206,7 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
         });
         dispatch(
           setAddGoal({
-            id: Math.random(),
+            goalId: Math.random(),
             goalData: goalState,
             percentatges: {
               today: 0,
@@ -217,6 +217,8 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
             currentResource: "Course",
             totalTime: 0,
             sesions: [],
+            indexCourse: { loading: false, value: "" },
+            indexBook: { loading: false, value: "" },
           })
         );
         setTimeout(() => {
@@ -313,7 +315,7 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
             labelText="Name"
             placeholder="input name"
             keyboardType="ascii-capable"
-            maxLength={25}
+            maxLength={35}
             onChangeText={(enteredText) => dispatch(setName(enteredText))}
             value={goalState.name ? goalState.name : ""}
             customStyles={{

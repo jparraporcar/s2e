@@ -1,10 +1,11 @@
-import { Middleware } from "redux";
+import { Middleware } from "@reduxjs/toolkit";
 import { resetTimer, startTimer, stopTimer, tick } from "../timerSlice";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { createSesionDayString } from "../../../utils/utils";
 import { useAppSelector } from "../../hooks";
 import { updateSesion, initializeSesion } from "../goalsListSlice";
+import BackgroundTimer from "react-native-background-timer";
 
 type TimerAction =
   | ReturnType<typeof startTimer>
@@ -30,12 +31,14 @@ const timerMiddleware: Middleware = (store) => (next) => (action) => {
       );
     }
     if (intervals[currentIntervalIndex].intervalId === null) {
+      BackgroundTimer.start();
       intervals[currentIntervalIndex].intervalId = setInterval(() => {
         store.dispatch(tick({ goalId: action.payload.goalId }));
       }, 1000);
     }
   } else if (action.type === stopTimer.type) {
     clearInterval(intervals[currentIntervalIndex].intervalId as number);
+    BackgroundTimer.stop();
     intervals[currentIntervalIndex].intervalId = null;
   } else if (action.type === tick.type) {
     const goalId = action.payload.goalId;
@@ -43,15 +46,15 @@ const timerMiddleware: Middleware = (store) => (next) => (action) => {
     // const sesionDayString = "2023-05-18";
     const sesionDayString = createSesionDayString();
     const sesion = goalsListState.goals
-      .find((goal) => goal.id === goalId)!
+      .find((goal) => goal.goalId === goalId)!
       .sesions.filter((sesion) => sesion.sesionDayString === sesionDayString);
     const sesionIndex = goalsListState.goals
-      .find((goal) => goal.id === goalId)!
+      .find((goal) => goal.goalId === goalId)!
       .sesions.findIndex(
         (sesion) => sesion.sesionDayString === sesionDayString
       );
     const goalIndex = goalsListState.goals.findIndex(
-      (goal) => goal.id === goalId
+      (goal) => goal.goalId === goalId
     );
     const timerState = state.timerList;
     const timerGoalIndex = state.timerList.timers.findIndex(
