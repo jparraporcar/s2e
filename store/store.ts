@@ -15,6 +15,10 @@ import {
 } from "redux-persist";
 import reduxFlipper from "redux-flipper";
 import { indexCourseMiddleWare } from "./slices/middlewares/indexCourseMiddleware";
+import {
+  evaluationSlice,
+  persistedEvaluationReducerSlice,
+} from "./slices/evaluationSlice";
 
 export const store = configureStore({
   devTools: true,
@@ -23,6 +27,7 @@ export const store = configureStore({
     goal: goalSlice,
     goalsList: persistedGoalsListReducerSlice,
     goalValidation: goalValidationSlice,
+    evaluation: persistedEvaluationReducerSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

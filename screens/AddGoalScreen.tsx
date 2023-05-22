@@ -217,8 +217,8 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
             currentResource: "Course",
             totalTime: 0,
             sesions: [],
-            indexCourse: { loading: false, value: "" },
-            indexBook: { loading: false, value: "" },
+            indexCourse: { loading: true, value: "" },
+            indexBook: { loading: true, value: "" },
           })
         );
         setTimeout(() => {

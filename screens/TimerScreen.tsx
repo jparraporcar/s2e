@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Timer from "../components/Timer";
 import IconButton from "../components/IconButton";
@@ -16,14 +16,21 @@ import { RouteProp, useNavigation } from "@react-navigation/native";
 import { initializeSesion, updateSesion } from "../store/slices/goalsListSlice";
 import { createSesionDayString } from "../utils/utils";
 import DateComponent from "../components/DateComponent";
+import { CustomModal } from "../components/CustomModal";
 
 type TimerScreenRouteProp = RouteProp<RootStackParamList, "TimerScreen">;
 
 type PropsTimerScreen = {
   route: TimerScreenRouteProp;
 };
+
+type IndexCourseScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "IndexCourseScreen"
+>;
 export const TimerScreen: React.FC<PropsTimerScreen> = (props): JSX.Element => {
-  const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const navigation: IndexCourseScreenNavigationProp = useNavigation();
   const goalId = props.route.params.goalId;
   const dispatch = useAppDispatch();
   const goalsListState = useAppSelector((state) => state.goalsList);
@@ -52,9 +59,7 @@ export const TimerScreen: React.FC<PropsTimerScreen> = (props): JSX.Element => {
     const actualTimer = timerState.timers.filter(
       (timer) => timer.goalId === goalId
     );
-    console.log(actualTimer, "actualTimer");
-
-    if (actualTimer.length > 0 && actualTimer[0].isRunning === false) {
+    if (actualTimer.length > 0) {
       dispatch(stopTimer({ goalId: goalId }));
     }
 
@@ -143,6 +148,24 @@ export const TimerScreen: React.FC<PropsTimerScreen> = (props): JSX.Element => {
             onPress={() => dispatch(stopTimer({ goalId: goalId }))}
           />
         </View>
+      </View>
+      <View>
+        <IconButton
+          customStyles={{ containerButton: { marginTop: 40 } }}
+          disabled={
+            goalsListState.goals[goalIndex].indexCourse.value === "error" ||
+            goalsListState.goals[goalIndex].indexCourse.loading === true
+              ? true
+              : false
+          }
+          iconName="albums"
+          iconSize={24}
+          iconColor="black"
+          actionTitle="evaluate course"
+          onPress={() =>
+            navigation.navigate("IndexCourseScreen", { goalId: goalId })
+          }
+        />
       </View>
     </View>
   );

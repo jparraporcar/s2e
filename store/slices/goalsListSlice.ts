@@ -134,13 +134,11 @@ export const goalsListSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCourseIndexOfGoal.fulfilled, (state, action) => {
-      state.goals[state.goals.length - 1].indexCourse.loading = true;
       state.goals[state.goals.length - 1].indexCourse.value =
         action.payload.content;
       state.goals[state.goals.length - 1].indexCourse.loading = false;
     });
     builder.addCase(fetchCourseIndexOfGoal.rejected, (state, action) => {
-      state.goals[state.goals.length - 1].indexCourse.loading = true;
       state.goals[state.goals.length - 1].indexCourse.value = "error";
       state.goals[state.goals.length - 1].indexCourse.loading = false;
     });

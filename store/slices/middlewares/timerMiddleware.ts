@@ -1,4 +1,4 @@
-import { Middleware } from "@reduxjs/toolkit";
+import { Middleware, current } from "@reduxjs/toolkit";
 import { resetTimer, startTimer, stopTimer, tick } from "../timerSlice";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
@@ -30,16 +30,22 @@ const timerMiddleware: Middleware = (store) => (next) => (action) => {
         (interval) => interval.goalId === action.payload.goalId
       );
     }
-    if (intervals[currentIntervalIndex].intervalId === null) {
+    if (
+      intervals.length > 0 &&
+      intervals[currentIntervalIndex].intervalId === null
+    ) {
       BackgroundTimer.start();
       intervals[currentIntervalIndex].intervalId = setInterval(() => {
         store.dispatch(tick({ goalId: action.payload.goalId }));
       }, 1000);
     }
   } else if (action.type === stopTimer.type) {
-    clearInterval(intervals[currentIntervalIndex].intervalId as number);
-    BackgroundTimer.stop();
-    intervals[currentIntervalIndex].intervalId = null;
+    if (intervals.length > 0) {
+      console.log(intervals, "intervals");
+      clearInterval(intervals[currentIntervalIndex].intervalId as number);
+      BackgroundTimer.stop();
+      intervals[currentIntervalIndex].intervalId = null;
+    }
   } else if (action.type === tick.type) {
     const goalId = action.payload.goalId;
     const goalsListState = state.goalsList;

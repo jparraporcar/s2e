@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { colorsPalette } from "../const/colors";
+import React from "react";
 
 interface IPropsIconButton {
   disabled: boolean;

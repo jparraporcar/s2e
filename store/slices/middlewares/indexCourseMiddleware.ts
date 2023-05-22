@@ -7,10 +7,6 @@ export const indexCourseMiddleWare: Middleware =
   (store) => (next) => (action: PayloadAction<GoalsItem>) => {
     if (action.type === setAddGoal.type) {
       const state: RootState = store.getState();
-      console.log("state.goalsList.goals", state.goalsList.goals);
-      console.log("action.payload.goalId", action.payload.goalId);
-      console.log("action.payload", action.payload);
-
       // check if last goal added (due to .push in setAddGoal) has a course
       // in that case dispatch fetch course index thunk
       console.log(

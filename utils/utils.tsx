@@ -2,6 +2,7 @@ import { merge } from "lodash";
 import { RootState } from "../store/store";
 import { GoalsListState } from "../store/slices/goalsListSlice";
 import { TimersState } from "../store/slices/timerSlice";
+import { QuizsListState } from "../store/slices/evaluationSlice";
 
 //A period is valid when dateA is greater or equal than DateB
 export const isPeriodValidPartial = (dateA: Date, dateB: Date): boolean => {
@@ -67,6 +68,13 @@ export const deepMergeStateReconcilerGoals = (
 export const deepMergeStateReconcilerTimers = (
   inboundState: TimersState,
   originalState: TimersState
+) => {
+  return merge({}, originalState, inboundState);
+};
+
+export const deepMergeStateReconcilerQuizs = (
+  inboundState: QuizsListState,
+  originalState: QuizsListState
 ) => {
   return merge({}, originalState, inboundState);
 };
