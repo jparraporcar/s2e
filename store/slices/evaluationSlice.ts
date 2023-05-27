@@ -5,19 +5,17 @@ import { deepMergeStateReconcilerQuizs } from "../../utils/utils";
 import { fetchCourseSectionQuiz } from "./actions";
 
 export type Questions = {
-  answer: string;
-  options: string[];
+  correct_answer: string;
+  options: { [key: string]: string[] };
   question: string;
-};
+}[];
 
 export type Subsection = {
-  questions: Questions;
-  title: string;
+  [key: string]: Questions;
 };
 
 export type QuizItem = {
-  section: string;
-  subsections: Subsection;
+  [key: string]: { [key: string]: Subsection } | number;
 };
 
 export interface QuizsListState {
@@ -64,7 +62,8 @@ export const evaluationSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchCourseSectionQuiz.fulfilled, (state, action) => {
       state.loadingState = "requested";
-      state.quizs.push(JSON.parse(action.payload.content));
+      console.log("push");
+      state.quizs.push(action.payload as any); //TODO: pending check typing
       state.loadingState = "received";
     });
     builder.addCase(fetchCourseSectionQuiz.rejected, (state, action) => {

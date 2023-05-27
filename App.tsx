@@ -10,12 +10,15 @@ import { persistor, store } from "./store/store";
 import { TimerScreen } from "./screens/TimerScreen";
 import { PersistGate } from "redux-persist/es/integration/react";
 import { IndexCourseScreen } from "./screens/IndexCourseScreen";
+import { CourseSectionQuizScreen } from "./screens/CourseSectionQuizScreen";
+import { QuizItem } from "./store/slices/evaluationSlice";
 
 export type RootStackParamList = {
   BottomNavigation: undefined;
   AddGoalScreen: undefined;
   TimerScreen: { goalId: number };
   IndexCourseScreen: { goalId: number };
+  CourseSectionQuizScreen: { quizItem: QuizItem };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -63,6 +66,17 @@ const App: React.FC = (): JSX.Element => {
               component={IndexCourseScreen}
               options={{
                 title: "Index Course",
+                headerBackTitleStyle: { paddingLeft: 10 },
+                headerTintColor: "black",
+                headerBackTitle: "Back",
+                headerBackImage: () => null,
+              }}
+            />
+            <Stack.Screen
+              name="CourseSectionQuizScreen"
+              component={CourseSectionQuizScreen}
+              options={{
+                title: "Section Quiz",
                 headerBackTitleStyle: { paddingLeft: 10 },
                 headerTintColor: "black",
                 headerBackTitle: "Back",

@@ -3,6 +3,7 @@ import axios from "axios";
 import { RootState } from "../store";
 import { TCourse } from "./goalSlice";
 import { GoalsItem } from "./goalsListSlice";
+import { Subsection } from "./evaluationSlice";
 
 interface FetchResponse {
   role: string;
@@ -47,27 +48,28 @@ export const fetchCourseIndexOfGoal = createAsyncThunk<
 
 export const fetchCourseSectionQuiz = createAsyncThunk<
   FetchResponse,
-  { sectionName: string; courseIndexString: string },
+  { goalId: number; sectionName: string; courseIndexString: string },
   { state: RootState }
 >(
   "courseSectionQuiz/fetch",
-  async ({ sectionName, courseIndexString }, thunkAPI) => {
+  async ({ goalId, sectionName, courseIndexString }, thunkAPI) => {
     const state = thunkAPI.getState();
 
     const queryCourseSectionIndex: QueryCourseSectionIndex = {
       courseIndex: courseIndexString,
       modelType: "gpt-3.5-turbo",
       sectionName: sectionName,
-      subsectionsNumber: 5,
+      subsectionsNumber: 2,
       numberOfQuestionsPerSubsection: 2,
-      numberOfPosibleSolutionsPerSubsection: 4,
+      numberOfPosibleSolutionsPerSubsection: 3,
     };
 
     const response = await axios.get<FetchResponse>(
-      `http://localhost:4000/dev/courseSectionQuiz`,
+      `https://8q88pv8kp9.execute-api.ap-northeast-1.amazonaws.com/dev/courseSectionQuiz`,
       { params: queryCourseSectionIndex }
     );
-    console.log(response);
-    return response.data;
+    console.log("action");
+    console.log({ [`${goalId}`]: response.data.content as any });
+    return { [Number(`${goalId}`)]: JSON.parse(response.data.content) } as any; //TODO: pending check typing
   }
 );
