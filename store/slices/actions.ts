@@ -3,11 +3,15 @@ import axios from "axios";
 import { RootState } from "../store";
 import { TCourse } from "./goalSlice";
 import { GoalsItem } from "./goalsListSlice";
-import { Subsection } from "./evaluationSlice";
 
 interface FetchResponse {
   role: string;
   content: string;
+}
+
+interface FetchResponseSection {
+  goalId: number;
+  content: any;
 }
 
 type QueryCourseIndex = {
@@ -47,14 +51,14 @@ export const fetchCourseIndexOfGoal = createAsyncThunk<
 });
 
 export const fetchCourseSectionQuiz = createAsyncThunk<
-  FetchResponse,
+  FetchResponseSection,
   { goalId: number; sectionName: string; courseIndexString: string },
   { state: RootState }
 >(
   "courseSectionQuiz/fetch",
   async ({ goalId, sectionName, courseIndexString }, thunkAPI) => {
     const state = thunkAPI.getState();
-
+    console.log(sectionName, "sectionName");
     const queryCourseSectionIndex: QueryCourseSectionIndex = {
       courseIndex: courseIndexString,
       modelType: "gpt-3.5-turbo",
@@ -64,12 +68,20 @@ export const fetchCourseSectionQuiz = createAsyncThunk<
       numberOfPosibleSolutionsPerSubsection: 3,
     };
 
-    const response = await axios.get<FetchResponse>(
+    const response = await axios.get<FetchResponseSection>(
       `https://8q88pv8kp9.execute-api.ap-northeast-1.amazonaws.com/dev/courseSectionQuiz`,
       { params: queryCourseSectionIndex }
     );
-    console.log("action");
-    console.log({ [`${goalId}`]: response.data.content as any });
-    return { [Number(`${goalId}`)]: JSON.parse(response.data.content) } as any; //TODO: pending check typing
+    console.log(
+      {
+        goalId: Number(goalId),
+        content: JSON.parse(response.data.content) as any,
+      },
+      "goalId: Number(goalId), content: JSON.parse(response.data.content) as any"
+    );
+    return {
+      goalId: Number(goalId),
+      content: JSON.parse(response.data.content) as any,
+    };
   }
 );

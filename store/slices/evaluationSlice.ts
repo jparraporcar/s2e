@@ -4,30 +4,37 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { deepMergeStateReconcilerQuizs } from "../../utils/utils";
 import { fetchCourseSectionQuiz } from "./actions";
 
-export type Questions = {
-  correct_answer: string;
-  options: { [key: string]: string[] };
-  question: string;
-}[];
+export interface QuizItem {
+  sectionName: string;
+  subsection1: Subsection;
+  subsection2: Subsection;
+}
 
-export type Subsection = {
-  [key: string]: Questions;
+export type Question = {
+  correct: string;
+  a: string;
+  b: string;
+  c: string;
+  questionName: string;
 };
 
-export type QuizItem = {
-  [key: string]: { [key: string]: Subsection } | number;
-};
+interface Subsection {
+  subsectionName: string;
+  questions: Question[];
+}
+
+interface QuizState {
+  quizItem: QuizItem[];
+}
 
 export interface QuizsListState {
-  quizs: QuizItem[];
   loadingState: "requested" | "received" | "error" | "";
-  result: number;
+  quizs: { [key: number]: QuizState };
 }
 
 const initialState = {
-  quizs: [] as QuizItem[],
+  quizs: {} as { [key: number]: QuizState },
   loadingState: "",
-  result: 0,
 };
 
 const persistConfig = {
@@ -56,14 +63,23 @@ export const evaluationSlice = createSlice({
       }>
     ) => {
       //TODO: logic pending
-      state.result += 1;
+    },
+    initializeLoadingState: (state) => {
+      state.loadingState = "";
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCourseSectionQuiz.fulfilled, (state, action) => {
       state.loadingState = "requested";
       console.log("push");
-      state.quizs.push(action.payload as any); //TODO: pending check typing
+      if (!state.quizs[action.payload.goalId]) {
+        state.quizs[action.payload.goalId] = {
+          quizItem: [action.payload.content],
+        };
+        return;
+      }
+      console.log(action.payload.content, "action.payload.content");
+      state.quizs[action.payload.goalId].quizItem.push(action.payload.content);
       state.loadingState = "received";
     });
     builder.addCase(fetchCourseSectionQuiz.rejected, (state, action) => {
@@ -72,7 +88,7 @@ export const evaluationSlice = createSlice({
   },
 });
 
-export const { evalAnswer } = evaluationSlice.actions;
+export const { evalAnswer, initializeLoadingState } = evaluationSlice.actions;
 
 export const persistedEvaluationReducerSlice = persistReducer(
   persistConfig,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import IconButton from "../components/IconButton";
@@ -12,6 +12,7 @@ import { fetchCourseSectionQuiz } from "../store/slices/actions";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { CustomModal } from "../components/CustomModal";
 import { LoadingSpinner } from "../components/LoadingSpinner";
+import { initializeLoadingState } from "../store/slices/evaluationSlice";
 
 type IndexCourseScreenRouteProp = RouteProp<
   RootStackParamList,
@@ -42,6 +43,18 @@ export const IndexCourseScreen: React.FC<PropsTimerScreen> = (
   ].indexCourse.value.replace(/'/g, '"');
   const courseIndexStringParsed = JSON.parse(courseIndexString);
   const evalState = useAppSelector((state) => state.evaluation);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  // useEffect(() => {
+  //   if (evalState.loadingState === "requested") {
+  //     setModalVisible(true);
+  //   } else {
+  //     setModalVisible(false);
+  //     dispatch(initializeLoadingState());
+  //   }
+  // }, [evalState.loadingState]);
+
+  console.log(evalState.loadingState);
   return (
     <ScrollView contentContainerStyle={{ padding: 15 }}>
       {courseIndexStringParsed.map((topic: string, index: number) => (
@@ -53,10 +66,22 @@ export const IndexCourseScreen: React.FC<PropsTimerScreen> = (
             // name then fetch the new quiz, navigate to the next page only when the
             // promise has been fullfilled and the loadingState has changed to received
 
-            const quizItem = evalState.quizs.find(
-              (el) => Object.keys(el[`${Number(goalId)}`])[0] === topic
+            const goalKey = Object.keys(evalState.quizs).find(
+              (key) => Number(key) === goalId
             );
+            console.log(goalKey, "goalKey");
+            console.log(
+              evalState.quizs[Number(goalKey)],
+              "evalState.quizs[Number(goalKey)]"
+            );
+            const quizItem = goalKey
+              ? evalState.quizs[`${Number(goalKey)}`].quizItem.find(
+                  (quiz) => quiz.sectionName === topic
+                )
+              : undefined;
+
             console.log(quizItem, "quizItem");
+            console.log(topic, "topic");
             if (quizItem) {
               navigation.navigate("CourseSectionQuizScreen", {
                 quizItem: quizItem,

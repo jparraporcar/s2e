@@ -1,124 +1,162 @@
+import { RouteProp } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import React, { useState } from "react";
-import { View, Text, Button, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Button,
+  ScrollView,
+} from "react-native";
+import { RootStackParamList } from "../App";
+import { colorsPalette } from "../const/colors";
+import { Question } from "../store/slices/evaluationSlice";
 
-interface Question {
-  question: string;
-  options: string[];
-  answer: string;
-}
+type CourseSectionQuizScreen = RouteProp<
+  RootStackParamList,
+  "CourseSectionQuizScreen"
+>;
 
-interface QuizItem {
-  [key: string]: {
-    questions: Question[];
-  };
-}
+type PropsCourseSectionQuizScreen = {
+  route: CourseSectionQuizScreen;
+};
 
-export const CourseSectionQuizScreen: React.FC = (): JSX.Element => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+type CourseSectionScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "CourseSectionQuizScreen"
+>;
 
-  const quizData: QuizItem = {
-    Limits: {
-      questions: [
-        {
-          question:
-            "What is the limit of f(x) = x^2 - 4x + 3 as x approaches 2?",
-          options: ["1", "3", "4", "5"],
-          answer: "1",
-        },
-        {
-          question:
-            "What is the limit of f(x) = (x^2 - 1)/(x - 1) as x approaches 1?",
-          options: ["0", "1", "2", "undefined"],
-          answer: "2",
-        },
-      ],
-    },
-    Derivatives: {
-      questions: [
-        {
-          question: "What is the derivative of f(x) = 3x^2 - 2x + 1?",
-          options: ["6x - 2", "6x + 2", "3x^2 - 2x", "3x^2 + 2x"],
-          answer: "6x - 2",
-        },
-        {
-          question: "What is the derivative of f(x) = sin(x) + cos(x)?",
-          options: [
-            "cos(x) - sin(x)",
-            "cos(x) + sin(x)",
-            "-cos(x) - sin(x)",
-            "-cos(x) + sin(x)",
-          ],
-          answer: "cos(x) - sin(x)",
-        },
-      ],
-    },
+export const CourseSectionQuizScreen: React.FC<PropsCourseSectionQuizScreen> = (
+  props
+): JSX.Element => {
+  const [data, setData] = useState(props.route.params.quizItem);
+  const [selections, setSelections] = useState<{ [key: string]: string }>({});
+
+  const selectOption = (questionName: string, option: string) => {
+    setSelections((prevSelections) => ({
+      ...prevSelections,
+      [questionName]: option,
+    }));
   };
 
-  const currentQuestionSet = Object.values(quizData)[currentQuestionIndex];
-  const currentQuestion = currentQuestionSet.questions[currentQuestionIndex];
+  const calculateScore = () => {
+    let correctCount = 0;
+    const allQuestions = [
+      ...data.subsection1.questions,
+      ...data.subsection2.questions,
+    ];
 
-  const handleAnswerSelect = (answer: string) => {
-    setSelectedAnswer(answer);
-  };
+    allQuestions.forEach((question) => {
+      if (selections[question.questionName] === question.correct) {
+        correctCount++;
+      }
+    });
 
-  const handleNextQuestion = () => {
-    // Check the selected answer here for correctness
-    // Your code to assess the correctness of the answer goes here
-
-    // Move to the next question
-    if (currentQuestionIndex < currentQuestionSet.questions.length - 1) {
-      setSelectedAnswer(null);
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      // Quiz completed, handle completion
-      // Your code to handle quiz completion goes here
-    }
+    const score = (correctCount / allQuestions.length) * 10;
+    console.log(`Your score is ${score}`);
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.questionText}>{currentQuestion.question}</Text>
-      {currentQuestion.options.map((option, index) => (
-        <TouchableOpacity
-          key={index}
-          onPress={() => handleAnswerSelect(option)}
-          style={styles.optionButton}
-        >
-          <Text style={styles.optionText}>{option}</Text>
-        </TouchableOpacity>
-      ))}
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.sectionTitle}>{data.sectionName}</Text>
+      <View style={styles.subsectionContainer}>
+        <Text style={styles.subsectionTitle}>
+          {data.subsection1.subsectionName}
+        </Text>
+        {data.subsection1.questions.map((question, index) => (
+          <View key={index}>
+            <Text>{question.questionName}</Text>
+            {["a", "b", "c"].map((option) => (
+              <TouchableOpacity
+                key={option}
+                style={[
+                  styles.button,
+                  selections[question.questionName] ===
+                    question[option as keyof Question] && styles.selectedOption,
+                ]}
+                onPress={() =>
+                  selectOption(
+                    question.questionName,
+                    question[option as keyof Question]
+                  )
+                }
+              >
+                <Text style={styles.buttonText}>
+                  {question[option as keyof Question]}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        ))}
+      </View>
+      <View style={styles.subsectionContainer}>
+        <Text style={styles.subsectionTitle}>
+          {data.subsection2.subsectionName}
+        </Text>
+        {data.subsection2.questions.map((question, index) => (
+          <View key={index}>
+            <Text>{question.questionName}</Text>
+            {["a", "b", "c"].map((option) => (
+              <TouchableOpacity
+                key={option}
+                style={[
+                  styles.button,
+                  selections[question.questionName] ===
+                    question[option as keyof Question] && styles.selectedOption,
+                ]}
+                onPress={() =>
+                  selectOption(
+                    question.questionName,
+                    question[option as keyof Question]
+                  )
+                }
+              >
+                <Text style={styles.buttonText}>
+                  {question[option as keyof Question]}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        ))}
+      </View>
       <Button
-        title={
-          currentQuestionIndex < currentQuestionSet.questions.length - 1
-            ? "Next"
-            : "Submit"
-        }
-        onPress={handleNextQuestion}
-        disabled={!selectedAnswer}
+        title="Submit"
+        onPress={calculateScore}
+        color={colorsPalette.primary_yellow_100}
       />
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "rgb(244, 218, 113)",
     padding: 16,
   },
-  questionText: {
-    fontSize: 16,
+  sectionTitle: {
+    fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 16,
+    color: colorsPalette.primary_yellow_100,
   },
-  optionButton: {
-    backgroundColor: "white",
+  subsectionContainer: {
+    marginVertical: 16,
+  },
+  subsectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: colorsPalette.primary_yellow_90,
+  },
+  button: {
+    backgroundColor: "transparent",
     padding: 10,
-    marginBottom: 8,
-    borderRadius: 4,
+    marginVertical: 5,
   },
-  optionText: {
-    fontSize: 14,
+  buttonText: {
+    color: "black",
+  },
+  selectedOption: {
+    backgroundColor: colorsPalette.primary_yellow_90,
   },
 });
+
+export default CourseSectionQuizScreen;
