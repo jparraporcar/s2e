@@ -45,14 +45,11 @@ export const IndexCourseScreen: React.FC<PropsTimerScreen> = (
   const evalState = useAppSelector((state) => state.evaluation);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   if (evalState.loadingState === "requested") {
-  //     setModalVisible(true);
-  //   } else {
-  //     setModalVisible(false);
-  //     dispatch(initializeLoadingState());
-  //   }
-  // }, [evalState.loadingState]);
+  useEffect(() => {
+    if (evalState.loadingState === "received") {
+      dispatch(initializeLoadingState());
+    }
+  }, [evalState.loadingState]);
 
   console.log(evalState.loadingState);
   return (
@@ -101,7 +98,11 @@ export const IndexCourseScreen: React.FC<PropsTimerScreen> = (
           <Text style={styles.title}>{topic}</Text>
         </TouchableOpacity>
       ))}
-      <CustomModal animationType="fade" transparent={true} modalVisible={false}>
+      <CustomModal
+        animationType="fade"
+        transparent={true}
+        modalVisible={evalState.loadingState === "requested" ? true : false}
+      >
         <View style={{ paddingBottom: 200 }}>
           <LoadingSpinner />
         </View>

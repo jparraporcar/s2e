@@ -23,7 +23,7 @@ export type GoalsItem = {
   currentResource: "Book" | "Course";
   totalTime: number;
   sesions: SesionTiming[];
-  indexCourse: { loading: boolean; value: string };
+  indexCourse: { loading: boolean; value: string; parsed: string[] };
   indexBook: { loading: boolean; value: string };
 };
 

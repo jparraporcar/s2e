@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Button,
   ScrollView,
+  Modal,
 } from "react-native";
 import { RootStackParamList } from "../App";
 import { colorsPalette } from "../const/colors";
@@ -32,6 +33,12 @@ export const CourseSectionQuizScreen: React.FC<PropsCourseSectionQuizScreen> = (
 ): JSX.Element => {
   const [data, setData] = useState(props.route.params.quizItem);
   const [selections, setSelections] = useState<{ [key: string]: string }>({});
+  const [modalVisible, setModalVisible] = useState(false);
+  const [results, setResults] = useState<{
+    score: number;
+    correctAnswers: string[];
+  }>({ score: 0, correctAnswers: [] });
+  const [correctAnswers, setCorrectAnswers] = useState<string[]>([]);
 
   const selectOption = (questionName: string, option: string) => {
     setSelections((prevSelections) => ({
@@ -46,27 +53,68 @@ export const CourseSectionQuizScreen: React.FC<PropsCourseSectionQuizScreen> = (
       ...data.subsection1.questions,
       ...data.subsection2.questions,
     ];
+    let results = [] as any;
 
     allQuestions.forEach((question) => {
-      if (selections[question.questionName] === question.correct) {
+      if (
+        selections[question.questionName] ===
+        question[question.correct as keyof Question]
+      ) {
         correctCount++;
+        results.push(`${question.questionName}: Correct`);
+      } else {
+        results.push(
+          `${question.questionName}: Incorrect. Correct answer: ${
+            question[question.correct as keyof Question]
+          }`
+        );
       }
     });
 
-    const score = (correctCount / allQuestions.length) * 10;
-    console.log(`Your score is ${score}`);
+    const quizScore = (correctCount / allQuestions.length) * 10;
+
+    setResults({ score: quizScore, correctAnswers: results });
+
+    setModalVisible(true);
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalTextScore}>
+              Your score is {results.score}
+            </Text>
+            {results.correctAnswers.map((answer, index) => (
+              <Text key={index} style={styles.modalTextAnswer}>
+                {answer}
+              </Text>
+            ))}
+            <Button
+              title="Close"
+              onPress={() => setModalVisible(!modalVisible)}
+              color={colorsPalette.primary_yellow_100}
+            />
+          </View>
+        </View>
+      </Modal>
+
       <Text style={styles.sectionTitle}>{data.sectionName}</Text>
       <View style={styles.subsectionContainer}>
         <Text style={styles.subsectionTitle}>
           {data.subsection1.subsectionName}
         </Text>
         {data.subsection1.questions.map((question, index) => (
-          <View key={index}>
-            <Text>{question.questionName}</Text>
+          <View key={index} style={styles.questionContainer}>
+            <Text>{`${index + 1}) ${question.questionName}`}</Text>
             {["a", "b", "c"].map((option) => (
               <TouchableOpacity
                 key={option}
@@ -83,7 +131,7 @@ export const CourseSectionQuizScreen: React.FC<PropsCourseSectionQuizScreen> = (
                 }
               >
                 <Text style={styles.buttonText}>
-                  {question[option as keyof Question]}
+                  {`${option}) ${question[option as keyof Question]}`}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -95,8 +143,8 @@ export const CourseSectionQuizScreen: React.FC<PropsCourseSectionQuizScreen> = (
           {data.subsection2.subsectionName}
         </Text>
         {data.subsection2.questions.map((question, index) => (
-          <View key={index}>
-            <Text>{question.questionName}</Text>
+          <View key={index} style={styles.questionContainer}>
+            <Text>{`${index + 1}) ${question.questionName}`}</Text>
             {["a", "b", "c"].map((option) => (
               <TouchableOpacity
                 key={option}
@@ -113,7 +161,7 @@ export const CourseSectionQuizScreen: React.FC<PropsCourseSectionQuizScreen> = (
                 }
               >
                 <Text style={styles.buttonText}>
-                  {question[option as keyof Question]}
+                  {`${option}) ${question[option as keyof Question]}`}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -135,16 +183,21 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 24,
+    marginBottom: 10,
     fontWeight: "bold",
     color: colorsPalette.primary_yellow_100,
   },
   subsectionContainer: {
-    marginVertical: 16,
+    marginVertical: 10,
   },
   subsectionTitle: {
     fontSize: 20,
+    marginBottom: 10,
     fontWeight: "bold",
-    color: colorsPalette.primary_yellow_90,
+    color: colorsPalette.primary_yellow_100,
+  },
+  questionContainer: {
+    marginVertical: 10,
   },
   button: {
     backgroundColor: "transparent",
@@ -155,7 +208,42 @@ const styles = StyleSheet.create({
     color: "black",
   },
   selectedOption: {
-    backgroundColor: colorsPalette.primary_yellow_90,
+    backgroundColor: colorsPalette.primary_yellow_80,
+    borderWidth: 0.5,
+    borderRadius: 5,
+    borderColor: colorsPalette.secondary_grey_90,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalTextScore: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  modalTextAnswer: {
+    marginBottom: 10,
+    textAlign: "center",
+    fontSize: 16,
   },
 });
 

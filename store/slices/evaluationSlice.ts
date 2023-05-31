@@ -69,8 +69,10 @@ export const evaluationSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchCourseSectionQuiz.fulfilled, (state, action) => {
+    builder.addCase(fetchCourseSectionQuiz.pending, (state, action) => {
       state.loadingState = "requested";
+    });
+    builder.addCase(fetchCourseSectionQuiz.fulfilled, (state, action) => {
       console.log("push");
       if (!state.quizs[action.payload.goalId]) {
         state.quizs[action.payload.goalId] = {
