@@ -38,6 +38,13 @@ export const IndexCourseScreen: React.FC<PropsTimerScreen> = (
   const goalIndex = goalsListState.goals.findIndex(
     (goal) => goal.goalId === goalId
   );
+  const [indexSectionSelected, setIndexSectionSelected] = useState<{
+    topic: string | undefined;
+    goalId: number | undefined;
+  }>({
+    topic: undefined,
+    goalId: undefined,
+  });
   const courseIndexString = goalsListState.goals[
     goalIndex
   ].indexCourse.value.replace(/'/g, '"');
@@ -48,10 +55,17 @@ export const IndexCourseScreen: React.FC<PropsTimerScreen> = (
   useEffect(() => {
     if (evalState.loadingState === "received") {
       dispatch(initializeLoadingState());
+      const quizItem = evalState.quizs[
+        `${Number(indexSectionSelected.goalId)}`
+      ].quizItem.find(
+        (quiz) => quiz.sectionName === indexSectionSelected.topic
+      );
+      navigation.navigate("CourseSectionQuizScreen", {
+        quizItem: quizItem!,
+      });
     }
   }, [evalState.loadingState]);
 
-  console.log(evalState.loadingState);
   return (
     <ScrollView contentContainerStyle={{ padding: 15 }}>
       {courseIndexStringParsed.map((topic: string, index: number) => (
@@ -76,9 +90,7 @@ export const IndexCourseScreen: React.FC<PropsTimerScreen> = (
                   (quiz) => quiz.sectionName === topic
                 )
               : undefined;
-
-            console.log(quizItem, "quizItem");
-            console.log(topic, "topic");
+            setIndexSectionSelected({ goalId: Number(goalKey), topic: topic });
             if (quizItem) {
               navigation.navigate("CourseSectionQuizScreen", {
                 quizItem: quizItem,
