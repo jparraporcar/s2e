@@ -53,17 +53,11 @@ export const IndexCourseScreen: React.FC<PropsTimerScreen> = (
 
   useEffect(() => {
     if (evalState.loadingState === "received") {
-      const quizItem = evalState.quizs[
-        `${Number(indexSectionSelected.goalId)}`
-      ].quizItem.find(
-        (quiz) => quiz.sectionName === indexSectionSelected.topic
-      );
-      navigation.navigate("CourseSectionQuizScreen", {
-        quizItem: quizItem!,
-      });
       setModalVisible(false);
+      dispatch(initializeLoadingState());
     } else if (evalState.loadingState === "error") {
       setModalVisible(false);
+      dispatch(initializeLoadingState());
     }
   }, [evalState]);
 
@@ -91,8 +85,8 @@ export const IndexCourseScreen: React.FC<PropsTimerScreen> = (
                   (quiz) => quiz.sectionName === topic
                 )
               : undefined;
-            setIndexSectionSelected({ goalId: Number(goalKey), topic: topic });
             if (quizItem) {
+              console.log("quizItem", quizItem);
               navigation.navigate("CourseSectionQuizScreen", {
                 quizItem: quizItem,
               });

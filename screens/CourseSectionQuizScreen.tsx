@@ -49,10 +49,7 @@ export const CourseSectionQuizScreen: React.FC<PropsCourseSectionQuizScreen> = (
 
   const calculateScore = () => {
     let correctCount = 0;
-    const allQuestions = [
-      ...data.subsection1.questions,
-      ...data.subsection2.questions,
-    ];
+    const allQuestions = [...data.subsection.questions];
     let results = [] as any;
 
     allQuestions.forEach((question) => {
@@ -109,9 +106,9 @@ export const CourseSectionQuizScreen: React.FC<PropsCourseSectionQuizScreen> = (
       <Text style={styles.sectionTitle}>{data.sectionName}</Text>
       <View style={styles.subsectionContainer}>
         <Text style={styles.subsectionTitle}>
-          {data.subsection1.subsectionName}
+          {data.subsection.subsectionName}
         </Text>
-        {data.subsection1.questions.map((question, index) => (
+        {data.subsection.questions.map((question, index) => (
           <View key={index} style={styles.questionContainer}>
             <Text>{`${index + 1}) ${question.questionName}`}</Text>
             {["a", "b", "c"].map((option) => (

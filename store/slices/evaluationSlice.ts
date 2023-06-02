@@ -6,8 +6,7 @@ import { fetchCourseSectionQuiz } from "./actions";
 
 export interface QuizItem {
   sectionName: string;
-  subsection1: Subsection;
-  subsection2: Subsection;
+  subsection: Subsection;
 }
 
 export type Question = {
@@ -73,17 +72,16 @@ export const evaluationSlice = createSlice({
       state.loadingState = "requested";
     });
     builder.addCase(fetchCourseSectionQuiz.fulfilled, (state, action) => {
-      console.log("push");
       if (!state.quizs[action.payload.goalId]) {
         state.quizs[action.payload.goalId] = {
           quizItem: [action.payload.content],
         };
-        state.loadingState = "received";
-        return;
+      } else {
+        state.quizs[action.payload.goalId].quizItem.push(
+          action.payload.content
+        );
       }
       state.loadingState = "received";
-      console.log(action.payload.content, "action.payload.content");
-      state.quizs[action.payload.goalId].quizItem.push(action.payload.content);
     });
     builder.addCase(fetchCourseSectionQuiz.rejected, (state, action) => {
       state.loadingState = "error";
