@@ -78,11 +78,12 @@ export const evaluationSlice = createSlice({
         state.quizs[action.payload.goalId] = {
           quizItem: [action.payload.content],
         };
+        state.loadingState = "received";
         return;
       }
+      state.loadingState = "received";
       console.log(action.payload.content, "action.payload.content");
       state.quizs[action.payload.goalId].quizItem.push(action.payload.content);
-      state.loadingState = "received";
     });
     builder.addCase(fetchCourseSectionQuiz.rejected, (state, action) => {
       state.loadingState = "error";

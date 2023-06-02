@@ -45,16 +45,14 @@ export const IndexCourseScreen: React.FC<PropsTimerScreen> = (
     topic: undefined,
     goalId: undefined,
   });
-  const courseIndexString = goalsListState.goals[
-    goalIndex
-  ].indexCourse.value.replace(/'/g, '"');
+  const courseIndexString = goalsListState.goals[goalIndex].indexCourse.value;
+  console.log(courseIndexString);
   const courseIndexStringParsed = JSON.parse(courseIndexString);
   const evalState = useAppSelector((state) => state.evaluation);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   useEffect(() => {
     if (evalState.loadingState === "received") {
-      dispatch(initializeLoadingState());
       const quizItem = evalState.quizs[
         `${Number(indexSectionSelected.goalId)}`
       ].quizItem.find(
@@ -63,8 +61,11 @@ export const IndexCourseScreen: React.FC<PropsTimerScreen> = (
       navigation.navigate("CourseSectionQuizScreen", {
         quizItem: quizItem!,
       });
+      setModalVisible(false);
+    } else if (evalState.loadingState === "error") {
+      setModalVisible(false);
     }
-  }, [evalState.loadingState]);
+  }, [evalState]);
 
   return (
     <ScrollView contentContainerStyle={{ padding: 15 }}>
@@ -103,6 +104,7 @@ export const IndexCourseScreen: React.FC<PropsTimerScreen> = (
                   courseIndexString: courseIndexString,
                 })
               );
+              setModalVisible(true);
             }
           }}
           activeOpacity={0.6}
@@ -113,7 +115,7 @@ export const IndexCourseScreen: React.FC<PropsTimerScreen> = (
       <CustomModal
         animationType="fade"
         transparent={true}
-        modalVisible={evalState.loadingState === "requested" ? true : false}
+        modalVisible={modalVisible}
       >
         <View style={{ paddingBottom: 200 }}>
           <LoadingSpinner />

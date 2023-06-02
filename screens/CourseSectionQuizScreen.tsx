@@ -106,43 +106,12 @@ export const CourseSectionQuizScreen: React.FC<PropsCourseSectionQuizScreen> = (
           </View>
         </View>
       </Modal>
-
       <Text style={styles.sectionTitle}>{data.sectionName}</Text>
       <View style={styles.subsectionContainer}>
         <Text style={styles.subsectionTitle}>
           {data.subsection1.subsectionName}
         </Text>
         {data.subsection1.questions.map((question, index) => (
-          <View key={index} style={styles.questionContainer}>
-            <Text>{`${index + 1}) ${question.questionName}`}</Text>
-            {["a", "b", "c"].map((option) => (
-              <TouchableOpacity
-                key={option}
-                style={[
-                  styles.button,
-                  selections[question.questionName] ===
-                    question[option as keyof Question] && styles.selectedOption,
-                ]}
-                onPress={() =>
-                  selectOption(
-                    question.questionName,
-                    question[option as keyof Question]
-                  )
-                }
-              >
-                <Text style={styles.buttonText}>
-                  {`${option}) ${question[option as keyof Question]}`}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        ))}
-      </View>
-      <View style={styles.subsectionContainer}>
-        <Text style={styles.subsectionTitle}>
-          {data.subsection2.subsectionName}
-        </Text>
-        {data.subsection2.questions.map((question, index) => (
           <View key={index} style={styles.questionContainer}>
             <Text>{`${index + 1}) ${question.questionName}`}</Text>
             {["a", "b", "c"].map((option) => (

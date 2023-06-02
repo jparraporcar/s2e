@@ -63,7 +63,7 @@ export const fetchCourseSectionQuiz = createAsyncThunk<
       courseIndex: courseIndexString,
       modelType: "gpt-3.5-turbo",
       sectionName: sectionName,
-      subsectionsNumber: 2,
+      subsectionsNumber: 1,
       numberOfQuestionsPerSubsection: 2,
       numberOfPosibleSolutionsPerSubsection: 3,
     };
