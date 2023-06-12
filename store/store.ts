@@ -40,9 +40,6 @@ export const store = configureStore({
       .concat(indexCourseMiddleWare),
 });
 
-console.log("Store created");
-console.log(store.getState(), "store.getState()");
-
 export const persistor = persistStore(store, null, () => {
   console.log("Rehydration complete - store.getState()", store.getState());
 });

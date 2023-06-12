@@ -23,7 +23,7 @@ export type GoalsItem = {
   currentResource: "Book" | "Course";
   totalTime: number;
   sesions: SesionTiming[];
-  indexCourse: { loading: boolean; value: string; parsed: string[] };
+  indexCourse: { loading: boolean; value: string };
   indexBook: { loading: boolean; value: string };
 };
 
@@ -43,7 +43,6 @@ const persistConfig = {
     inboundState: GoalsListState,
     originalState: GoalsListState
   ) => {
-    console.log("State reconciliation goals", { inboundState, originalState });
     return deepMergeStateReconcilerGoals(inboundState, originalState);
   },
 };
@@ -53,7 +52,6 @@ export const goalsListSlice = createSlice({
   initialState,
   reducers: {
     setAddGoal: (state, action: PayloadAction<GoalsItem>) => {
-      console.log(action.payload, "action.payload");
       state.goals.push(action.payload);
     },
     setDeleteGoal: (state, action: PayloadAction<number>) => {

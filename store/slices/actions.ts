@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "../store";
-import { TCourse } from "./goalSlice";
 import { GoalsItem } from "./goalsListSlice";
+import Config from 'react-native-config'
 
 interface FetchResponse {
   role: string;
@@ -41,12 +41,10 @@ export const fetchCourseIndexOfGoal = createAsyncThunk<
     difficulty: "hard",
     courseName: courseGoal.name,
   };
-  console.log(queryCourseIndex);
   const response = await axios.get<FetchResponse>(
-    `https://8q88pv8kp9.execute-api.ap-northeast-1.amazonaws.com/dev/indexCourse`,
+    Config.INDEX_API_URL as string,
     { params: queryCourseIndex }
   );
-  console.log(response);
   return response.data;
 });
 
@@ -58,7 +56,6 @@ export const fetchCourseSectionQuiz = createAsyncThunk<
   "courseSectionQuiz/fetch",
   async ({ goalId, sectionName, courseIndexString }, thunkAPI) => {
     const state = thunkAPI.getState();
-    console.log(sectionName, "sectionName");
     const queryCourseSectionIndex: QueryCourseSectionIndex = {
       courseIndex: courseIndexString,
       modelType: "gpt-3.5-turbo",
@@ -69,16 +66,10 @@ export const fetchCourseSectionQuiz = createAsyncThunk<
     };
 
     const response = await axios.get<FetchResponseSection>(
-      `https://8q88pv8kp9.execute-api.ap-northeast-1.amazonaws.com/dev/courseSectionQuiz`,
+      Config.SECTION_API_URL as string,
       { params: queryCourseSectionIndex }
     );
-    console.log(
-      {
-        goalId: Number(goalId),
-        content: JSON.parse(response.data.content) as any,
-      },
-      "goalId: Number(goalId), content: JSON.parse(response.data.content) as any"
-    );
+
     return {
       goalId: Number(goalId),
       content: JSON.parse(response.data.content) as any,

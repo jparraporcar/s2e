@@ -9,10 +9,6 @@ export const indexCourseMiddleWare: Middleware =
       const state: RootState = store.getState();
       // check if last goal added (due to .push in setAddGoal) has a course
       // in that case dispatch fetch course index thunk
-      console.log(
-        "action.payload.goalData.course[0]",
-        action.payload.goalData.course[0]
-      );
       if (action.payload.goalData.course.length > 0) {
         store.dispatch(
           fetchCourseIndexOfGoal({

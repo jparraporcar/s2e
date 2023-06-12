@@ -259,8 +259,6 @@ export const AddGoalScreen: React.FC = (props): JSX.Element => {
     }
   }, [goalValidationState]);
 
-  console.log(goalState);
-
   return (
     <>
       <CustomModal

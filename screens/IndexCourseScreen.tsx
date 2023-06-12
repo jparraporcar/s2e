@@ -46,7 +46,6 @@ export const IndexCourseScreen: React.FC<PropsTimerScreen> = (
     goalId: undefined,
   });
   const courseIndexString = goalsListState.goals[goalIndex].indexCourse.value;
-  console.log(courseIndexString);
   const courseIndexStringParsed = JSON.parse(courseIndexString);
   const evalState = useAppSelector((state) => state.evaluation);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -75,18 +74,12 @@ export const IndexCourseScreen: React.FC<PropsTimerScreen> = (
             const goalKey = Object.keys(evalState.quizs).find(
               (key) => Number(key) === goalId
             );
-            console.log(goalKey, "goalKey");
-            console.log(
-              evalState.quizs[Number(goalKey)],
-              "evalState.quizs[Number(goalKey)]"
-            );
             const quizItem = goalKey
               ? evalState.quizs[`${Number(goalKey)}`].quizItem.find(
                   (quiz) => quiz.sectionName === topic
                 )
               : undefined;
             if (quizItem) {
-              console.log("quizItem", quizItem);
               navigation.navigate("CourseSectionQuizScreen", {
                 quizItem: quizItem,
               });

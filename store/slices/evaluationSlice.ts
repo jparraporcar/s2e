@@ -44,7 +44,6 @@ const persistConfig = {
     inboundState: QuizsListState,
     originalState: QuizsListState
   ) => {
-    console.log("State reconciliation goals", { inboundState, originalState });
     return deepMergeStateReconcilerQuizs(inboundState, originalState);
   },
 };

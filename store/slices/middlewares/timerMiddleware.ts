@@ -41,7 +41,6 @@ const timerMiddleware: Middleware = (store) => (next) => (action) => {
     }
   } else if (action.type === stopTimer.type) {
     if (intervals.length > 0) {
-      console.log(intervals, "intervals");
       clearInterval(intervals[currentIntervalIndex].intervalId as number);
       BackgroundTimer.stop();
       intervals[currentIntervalIndex].intervalId = null;

@@ -82,4 +82,7 @@ Pods/
 # vendor
 vendor/
 
+# .env
+.env
+
  

@@ -22,7 +22,6 @@ const persistConfig = {
   storage: AsyncStorage,
   whitelist: ["timers"],
   stateReconciler: (inboundState: TimersState, originalState: TimersState) => {
-    console.log("State reconciliation timers", { inboundState, originalState });
     return deepMergeStateReconcilerTimers(inboundState, originalState);
   },
 };

@@ -32,7 +32,6 @@ export const LabelledTextInput: React.FC<IPropsLabelledTextInput> = (
   props
 ): JSX.Element => {
   const { colors } = useTheme();
-  console.log(typeof props.value);
   return (
     <View
       style={[

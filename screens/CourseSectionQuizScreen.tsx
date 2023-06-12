@@ -53,14 +53,6 @@ export const CourseSectionQuizScreen: React.FC<PropsCourseSectionQuizScreen> = (
     let results = [] as any;
 
     allQuestions.forEach((question) => {
-      console.log(
-        "selections[question.questionName]",
-        selections[question.questionName]
-      );
-      console.log(
-        "question[question.correct as keyof Question]",
-        question[question.correct as keyof Question]
-      );
       if (
         selections[question.questionName] ===
         question[question.correct as keyof Question]
