@@ -93,7 +93,7 @@ To setup and deploy these services, please follow the instructions in the [s2e-b
   <figcaption>App flow</figcaption>
   <br />
   <br />
-  <img src="./screenshots/app-flow" alt="App flow">
+  <img src="./screenshots/app-flow.jpg" alt="App flow">
 </figure>
 
 ## Contact
