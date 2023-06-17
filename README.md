@@ -48,6 +48,13 @@ This project relies on backend services that are deployed to AWS using Serverles
 
 To setup and deploy these services, please follow the instructions in the [s2e-backend repository](https://github.com/jparraporcar/s2e-backend).
 
+Once the backend is deployed, you need to create a new file .env in the root of the app with the two endpoints coming from the backend:
+
+```
+INDEX_API_URL=xxx
+SECTION_API_URL=xxx
+```
+
 ### Installing
 
 1. **Clone the repo**: Clone this repository to your local machine.
