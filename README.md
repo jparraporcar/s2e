@@ -95,19 +95,23 @@ SECTION_API_URL=xxx
     
 ## Technologies
 
-The `s2e-backend` utilizes various technologies and packages for its implementation:
+This project is created with:
 
-1. **Node.js** - An open-source, cross-platform, JavaScript runtime environment that executes JavaScript code outside of a web browser.
-
-2. **TypeScript** - An open-source language that builds on JavaScript by adding static type definitions. This project was built using TypeScript version 4.9.5.
-
-3. **AWS Lambda** - A serverless compute service that lets you run your code without provisioning or managing servers.
-
-4. **Axios** - A promise-based HTTP client for the browser and Node.js. Axios makes it easy to send asynchronous HTTP requests.
-
-5. **OpenAI API** - Used to interact with the OpenAI GPT-3.5 model for course index generation and quiz creation.
-
-6. **Serverless Framework** - An open-source deployment framework that allows developers to build and deploy auto-scaling, pay-per-execution, event-driven functions.
+- [React Native](https://reactnative.dev/) - A popular framework for building native mobile applications using JavaScript and React.
+- [Redux](https://redux.js.org/) - A predictable state container for JavaScript apps.
+- [Redux Persist](https://github.com/rt2zz/redux-persist) - A library to persist and rehydrate a redux store.
+- [Async Storage](https://github.com/react-native-async-storage/async-storage) - An asynchronous, unencrypted, persistent, key-value storage system for React Native.
+- [Axios](https://github.com/axios/axios) - Promise based HTTP client for the browser and node.js.
+- [Lodash](https://lodash.com/) - A modern JavaScript utility library delivering modularity, performance & extras.
+- [React Navigation](https://reactnavigation.org/) - Routing and navigation for React Native apps.
+- [React Native Vector Icons](https://github.com/oblador/react-native-vector-icons) - Customizable Icons for React Native.
+- [Zod](https://github.com/colinhacks/zod) - TypeScript-first schema validation with static type inference.
+- [React Native Background Timer](https://github.com/ocetnik/react-native-background-timer) - Emit event periodically in the background.
+- [React Native Config](https://github.com/luggit/react-native-config) - Module to expose config variables to your javascript code in React Native.
+- [React Native Gesture Handler](https://github.com/software-mansion/react-native-gesture-handler) - Declarative API exposing platform native touch and gesture system to React Native.
+- [React Native Reanimated](https://github.com/software-mansion/react-native-reanimated) - React Native's Animated library reimplemented.
+- [React Native Toast Message](https://github.com/calintamas/react-native-toast-message) - A toast message component for React Native.
+- [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript at Any Scale.
 
 
 ## Usage
