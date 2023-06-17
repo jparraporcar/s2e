@@ -2,10 +2,9 @@
 
 ## Description
 
-React Native Study 's2e' (StudyToEvolve) is a mobile application that seeks to optimize personal learning and study habits. This app features an intuitive user interface with a focus on goal-setting and tracking to aid users in managing their educational journey more effectively.
+React Native 's2e' (StudyToEvolve) is a mobile application that seeks to optimize personal learning and study habits. This app features an intuitive user interface with a focus on goal-setting and tracking to aid users in managing their educational journey more effectively.
 
 The application is built around three main sections: Statistics, Goals, and Settings. Currently, the Goals section is functional and it is designed to help users create, manage, and track their study objectives. Users can add course-based goals and utilize an interactive timer feature to monitor their daily study habits. A unique feature of this application is its ability to generate interactive quizzes that offer a self-assessment tool based on the course information provided.
-
 As it stands, 's2e' is in its initial development stages. Exciting features and improvements are planned for future updates, making the study process even more engaging and productive for users.
 
 Please refer to the Usage section for more detailed information on how to navigate the application.
@@ -41,7 +40,7 @@ Ensure that you have the following installed on your local development machine:
     yarn -v
     ```
 
-3. **Xcode**: If you're on macOS, you'll need Xcode for iOS development. You can install it from the [Mac App Store](https://apps.apple.com/us/app/xcode/id497799835).
+3. **Xcode**: If you're on macOS, you'll need Xcode for iOS development (and an Apple developer account). You can install Xcode from the [Mac App Store](https://apps.apple.com/us/app/xcode/id497799835).
 
 ### Backend setup
 
