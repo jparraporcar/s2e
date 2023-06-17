@@ -92,6 +92,23 @@ SECTION_API_URL=xxx
     ```
     npx react-native run-ios
     ```
+    
+## Technologies
+
+The `s2e-backend` utilizes various technologies and packages for its implementation:
+
+1. **Node.js** - An open-source, cross-platform, JavaScript runtime environment that executes JavaScript code outside of a web browser.
+
+2. **TypeScript** - An open-source language that builds on JavaScript by adding static type definitions. This project was built using TypeScript version 4.9.5.
+
+3. **AWS Lambda** - A serverless compute service that lets you run your code without provisioning or managing servers.
+
+4. **Axios** - A promise-based HTTP client for the browser and Node.js. Axios makes it easy to send asynchronous HTTP requests.
+
+5. **OpenAI API** - Used to interact with the OpenAI GPT-3.5 model for course index generation and quiz creation.
+
+6. **Serverless Framework** - An open-source deployment framework that allows developers to build and deploy auto-scaling, pay-per-execution, event-driven functions.
+
 
 ## Usage
 
