@@ -18,9 +18,9 @@ Please refer to the Usage section for more detailed information on how to naviga
 ## Table of Contents
 
 - [Installation](#installation)
-    - [Prerequisites](#prerequisites)
-    - [Backend Setup](#backend-setup)
-    - [Installing](#installing)- [Usage](#usage)
+  - [Prerequisites](#prerequisites)
+  - [Backend Setup](#backend-setup)
+  - [Installing](#installing)- [Usage](#usage)
 - [Technologies](#technologies)
 - [Usage](#usage)
 - [Contact](#contact)
@@ -33,24 +33,26 @@ Ensure that you have the following installed on your local development machine:
 
 1. **Node.js**: Visit the [official Node.js website](https://nodejs.org/) to download and install Node.js. This will include `npm`, the Node.js package manager.
 
-    ```
-    # To check your version of Node.js and npm
-    node -v
-    npm -v
-    ```
+   ```
+   # To check your version of Node.js and npm
+   node -v
+   npm -v
+   ```
 
 2. **Yarn**: Yarn is another JavaScript package manager that can be used alongside or as an alternative to npm. Visit the [official Yarn website](https://yarnpkg.com/) to download and install Yarn.
 
-    ```
-    # To check your version of yarn
-    yarn -v
-    ```
+   ```
+   # To check your version of yarn
+   yarn -v
+   ```
 
 3. **Xcode**: If you're on macOS, you'll need Xcode for iOS development (and an Apple developer account). You can install Xcode from the [Mac App Store](https://apps.apple.com/us/app/xcode/id497799835).
 
+4. **React Native CLI**: It is necessary to have setup the React Native development environment, please follow instructions in the correspondend tab in the page [React Native CLI](https://reactnative.dev/docs/environment-setup)
+
 ### Backend setup
 
-This project relies on backend services that are deployed to AWS using Serverless Framework. These services interact with OpenAI API to fetch course indexes and quiz data. 
+This project relies on backend services that are deployed to AWS using Serverless Framework. These services interact with OpenAI API to fetch course indexes and quiz data.
 
 To setup and deploy these services, please follow the instructions in the [s2e-backend repository](https://github.com/jparraporcar/s2e-backend).
 
@@ -65,40 +67,40 @@ SECTION_API_URL=xxx
 
 1. **Clone the repo**: Clone this repository to your local machine.
 
-    ```
-    git clone https://github.com/jparraporcar/s2e.git
-    ```
+   ```
+   git clone https://github.com/jparraporcar/s2e.git
+   ```
 
 2. **Navigate to the cloned directory**: Use the command line to navigate into the directory you just cloned.
 
-    ```
-    cd s2e
-    ```
+   ```
+   cd s2e
+   ```
 
 3. **Install npm packages**: Run `npm install` to install all the dependencies defined in the package.json file.
 
-    ```
-    npm install
-    ```
+   ```
+   npm install
+   ```
 
 4. **Install Yarn packages**: Run `yarn install` to install all the dependencies defined in the package.json file.
 
-    ```
-    yarn install
-    ```
+   ```
+   yarn install
+   ```
 
-5. **Start Metro Bundler**: In a new terminal window, run `npx react-native start` to start Metro Bundler.
+5. **install pods**: Go to the /ios folder and execute the following command
 
-    ```
-    npx react-native start
-    ```
+   ```
+   pod install
+   ```
 
 6. **Start the iOS application**: In a different terminal window, run `npx react-native run-ios` to start the iOS application. The simulator should start automatically once the build is complete.
 
-    ```
-    npx react-native run-ios
-    ```
-    
+   ```
+   npx react-native run-ios
+   ```
+
 ## Technologies
 
 This project is created with:
@@ -119,7 +121,6 @@ This project is created with:
 - [React Native Toast Message](https://github.com/calintamas/react-native-toast-message) - A toast message component for React Native.
 - [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript at Any Scale.
 
-
 ## Usage
 
 <figure>
@@ -136,12 +137,3 @@ If you want to contact me you can reach me at:
 - **Name**: `Jordi Parra Porcar`
 - **Email**: `jordiparraporcar@gmail.com`
 - **LinkedIn**: [`Jordi Parra Porcar`](https://www.linkedin.com/in/jordiparraporcar/)
-
-
-
-
-
-
-
-
-
