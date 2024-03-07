@@ -74,13 +74,19 @@ SECTION_API_URL=xxx
    ```
    npm install
    ```
-4. **install pods**: Go to the /ios folder and execute the following command
+4. **Install pods**: Go to the /ios folder and execute the following command
 
    ```
    pod install
    ```
 
-5. **Start the iOS application**: In a different terminal window, run `npx react-native run-ios` to start the iOS application. The simulator should start automatically once the build is complete.
+5. **Start the metro bundler**: 
+
+   ```
+   npm start
+   ```
+
+6. **Start the iOS application**: In a different terminal window, run `npx react-native run-ios` to start the iOS application. The simulator should start automatically once the build is complete.
 
    ```
    npx react-native run-ios
