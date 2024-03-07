@@ -38,17 +38,9 @@ Ensure that you have the following installed on your local development machine:
    node -v
    npm -v
    ```
+2. **Xcode**: If you're on macOS, you'll need Xcode for iOS development (and an Apple developer account). You can install Xcode from the [Mac App Store](https://apps.apple.com/us/app/xcode/id497799835).
 
-2. **Yarn**: Yarn is another JavaScript package manager that can be used alongside or as an alternative to npm. Visit the [official Yarn website](https://yarnpkg.com/) to download and install Yarn.
-
-   ```
-   # To check your version of yarn
-   yarn -v
-   ```
-
-3. **Xcode**: If you're on macOS, you'll need Xcode for iOS development (and an Apple developer account). You can install Xcode from the [Mac App Store](https://apps.apple.com/us/app/xcode/id497799835).
-
-4. **React Native CLI**: It is necessary to have setup the React Native development environment, please follow instructions in the correspondend tab in the page [React Native CLI](https://reactnative.dev/docs/environment-setup)
+3. **React Native CLI**: It is necessary to have setup the React Native development environment, please follow instructions in the correspondend tab in the page [React Native CLI](https://reactnative.dev/docs/environment-setup)
 
 ### Backend setup
 
@@ -82,20 +74,13 @@ SECTION_API_URL=xxx
    ```
    npm install
    ```
-
-4. **Install Yarn packages**: Run `yarn install` to install all the dependencies defined in the package.json file.
-
-   ```
-   yarn install
-   ```
-
-5. **install pods**: Go to the /ios folder and execute the following command
+4. **install pods**: Go to the /ios folder and execute the following command
 
    ```
    pod install
    ```
 
-6. **Start the iOS application**: In a different terminal window, run `npx react-native run-ios` to start the iOS application. The simulator should start automatically once the build is complete.
+5. **Start the iOS application**: In a different terminal window, run `npx react-native run-ios` to start the iOS application. The simulator should start automatically once the build is complete.
 
    ```
    npx react-native run-ios
