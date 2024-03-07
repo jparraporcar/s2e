@@ -16,7 +16,15 @@ node_modules/
 # vendor
 vendor/
 
+# Built (will be generated when executing npm run ios)
+build/
+
+# Pods (to be installed by using the Podfile)
+Pods/
+
 # .env
 .env
 
+# .DS_Store (used by finder)
+ios/.DS_Store
  
